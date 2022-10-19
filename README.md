@@ -1,0 +1,1 @@
+This project is based on the software package CIOC by Sergey Levine, which is publicly available at the corresponding website https://graphics.stanford.edu/projects/cioc/. The package is adopted in this repository's folder cioc.
