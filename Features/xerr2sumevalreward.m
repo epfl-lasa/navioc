@@ -19,5 +19,6 @@ if nargout >= 3
 end
 if nargout >= 6
 	d2rdxdx = zeros(Nt, Nx, Nx);
-	d2rdxdx(:, idx, idx) = repmat(reshape(eye(Nu), 1, Nu, Nu), Nt);
+	d2rdxdx(:, idx, idx) = repmat(reshape(eye(Nu), [1, Nu, Nu]), [Nt, 1, 1]);
+    %disp(reward.type)
 end

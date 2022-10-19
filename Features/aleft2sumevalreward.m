@@ -34,23 +34,24 @@ end
 if nargout >= 6
 	d2rdxdx = zeros(Nt, Nx, Nx);
 
-	d2rdxdx(:, vx_jj, vx_jj) = Ay.^2.*repmat(reshape(eye(Nag), 1, Nag, Nag), Nt);
-	d2rdxdx(:, vx_jj, vy_jj) = -Ay.*Ax.*repmat(reshape(eye(Nag), 1, Nag, Nag), Nt);
-	d2rdxdx(:, vx_jj, ax_jj) = -Ay.*Vy.*repmat(reshape(eye(Nag), 1, Nag, Nag), Nt);
-	d2rdxdx(:, vx_jj, ay_jj) = (2*Vx.*Ay - Vy.*Ax).*repmat(reshape(eye(Nag), 1, Nag, Nag), Nt);
+	d2rdxdx(:, vx_jj, vx_jj) = Ay.^2.*repmat(reshape(eye(Nag), [1, Nag, Nag]), [Nt, 1, 1]);
+	d2rdxdx(:, vx_jj, vy_jj) = -Ay.*Ax.*repmat(reshape(eye(Nag), [1, Nag, Nag]), [Nt, 1, 1]);
+	d2rdxdx(:, vx_jj, ax_jj) = -Ay.*Vy.*repmat(reshape(eye(Nag), [1, Nag, Nag]), [Nt, 1, 1]);
+	d2rdxdx(:, vx_jj, ay_jj) = (2*Vx.*Ay - Vy.*Ax).*repmat(reshape(eye(Nag), [1, Nag, Nag]), [Nt, 1, 1]);
 
 	d2rdxdx(:, vy_jj, vx_jj) = d2rdxdx(:, vx_jj, vy_jj);
-	d2rdxdx(:, vy_jj, vy_jj) = Ax.^2.*repmat(reshape(eye(Nag), 1, Nag, Nag), Nt);
-	d2rdxdx(:, vy_jj, ax_jj) = (2*Vy.*Ax - Vx.*Ay).*repmat(reshape(eye(Nag), 1, Nag, Nag), Nt);
-	d2rdxdx(:, vy_jj, ay_jj) = -Ax.*Vx.*repmat(reshape(eye(Nag), 1, Nag, Nag), Nt);
+	d2rdxdx(:, vy_jj, vy_jj) = Ax.^2.*repmat(reshape(eye(Nag), [1, Nag, Nag]), [Nt, 1, 1]);
+	d2rdxdx(:, vy_jj, ax_jj) = (2*Vy.*Ax - Vx.*Ay).*repmat(reshape(eye(Nag), [1, Nag, Nag]), [Nt, 1, 1]);
+	d2rdxdx(:, vy_jj, ay_jj) = -Ax.*Vx.*repmat(reshape(eye(Nag), [1, Nag, Nag]), [Nt, 1, 1]);
 
 	d2rdxdx(:, ax_jj, vx_jj) = d2rdxdx(:, vx_jj, ax_jj);
 	d2rdxdx(:, ax_jj, vy_jj) = d2rdxdx(:, vy_jj, ax_jj);
-	d2rdxdx(:, ax_jj, ax_jj) = Vy.^2.*repmat(reshape(eye(Nag), 1, Nag, Nag), Nt);
-	d2rdxdx(:, ax_jj, ay_jj) = -Vx.*Vy.*repmat(reshape(eye(Nag), 1, Nag, Nag), Nt);
+	d2rdxdx(:, ax_jj, ax_jj) = Vy.^2.*repmat(reshape(eye(Nag), [1, Nag, Nag]), [Nt, 1, 1]);
+	d2rdxdx(:, ax_jj, ay_jj) = -Vx.*Vy.*repmat(reshape(eye(Nag), [1, Nag, Nag]), [Nt, 1, 1]);
 
 	d2rdxdx(:, ay_jj, vx_jj) = d2rdxdx(:, vx_jj, ay_jj);
 	d2rdxdx(:, ay_jj, vy_jj) = d2rdxdx(:, vy_jj, ay_jj);
 	d2rdxdx(:, ay_jj, ax_jj) = d2rdxdx(:, ax_jj, ay_jj);
-	d2rdxdx(:, ay_jj, ay_jj) = Vx.^2.*repmat(reshape(eye(Nag), 1, Nag, Nag), Nt);
+	d2rdxdx(:, ay_jj, ay_jj) = Vx.^2.*repmat(reshape(eye(Nag), [1, Nag, Nag]), [Nt, 1, 1]);
+    %disp(reward.type)
 end

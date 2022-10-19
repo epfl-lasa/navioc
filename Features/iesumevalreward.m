@@ -76,7 +76,9 @@ for i = 1:n_agents
 			dZdx = s*(dMudx - [2*Vmag.*[P, -P] - P2.*Vmag.*dDeltadP./Delta, P2./Vmag.*[V, -V]]./Delta);
 			dHdx = H.*(1 - H).*dZdx;
 
-			drdx = drdx + H./D.^2.*(2*D.*[zeros(size(P, 1), 4), V, -V] - V2.*dDdx) + V2./D.*dHdx;
+            jj = [ip1, ip2, iv1, iv2];
+            
+			drdx(:, jj) = drdx(:, jj) + H./D.^2.*(2*D.*[zeros(size(P, 1), 4), V, -V] - V2.*dDdx) + V2./D.*dHdx;
 		end
 		if nargout >= 6
 			% Hessian
@@ -115,7 +117,7 @@ for i = 1:n_agents
 			d2Zdx2 = s*(d2Mudx2 - dAdx + dBdx);
 			d2Hdx2 = dZdx.*reshape(dHdx, [m, 1, 8]).*(1 - 2*H) + H.*(1 - H).*d2Zdx2;
 
-			d2rdxdx = d2rdxdx + (2*D.*dVdxTV - V2.*dDdx).*reshape(dHdx./D.^2 - 2*H./D.^3.*dDdx, [m, 1, 8]) ...
+			d2rdxdx(:, jj, jj) = d2rdxdx(:, jj, jj) + (2*D.*dVdxTV - V2.*dDdx).*reshape(dHdx./D.^2 - 2*H./D.^3.*dDdx, [m, 1, 8]) ...
 				+ H./D.^2.*(2*dVdxTV.*reshape(dDdx, [m, 1, 8]) + 2*D.*dVdxTdVdx - 2*dDdx.*reshape(dVdxTV, [m, 1, 8]) ...
 				- V2.*d2Ddx2) + dHdx.*reshape((2*D.*dVdxTV - V2.*dDdx)./D.^2, [m, 1, 8]) + V2./D.*d2Hdx2;
 		end
@@ -130,4 +132,5 @@ if nargout >= 2
 end
 if nargout >= 6
 	d2rdxdx = d2rdxdx/normalizer;
+    %disp(reward.type)
 end
