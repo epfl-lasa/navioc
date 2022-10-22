@@ -1,6 +1,6 @@
-n_agents = 7;
+n_agents = 20;
 
-rng(4);
+rng(1);
 
 %v_des = 1.3*[1, 0, -1, 0, 0, 1, 0, -1]; % [vx1, vy1, ..., vx4, vy4]
 v_des = reshape([1-2*(rand(1, n_agents) > 0.5); zeros(1, n_agents)], [1, 2*n_agents]);
@@ -10,8 +10,8 @@ mdp_data = struct(...
 	'n_ped', n_agents, ...
 	'dims', 6*n_agents, ... positions, velocities, accelerations
 	'udims', 2*n_agents, ... jerks
-	'half_width', 8.0, ... [m]
-	'half_height', 1.0, ... [m]
+	'half_width', 10.0, ... [m]
+	'half_height', 2.0, ... [m]
 	'v_max', 1.7, ... [m/s]
 	'accel_max', 5.0, ... [m/s^2]
 	'u_sigma', 3.0, ... [m/s^3] standard deviation for sampling controls
