@@ -1,5 +1,5 @@
 % Compute trajectory info structs for each trajectory.
-function infos = trajinfos(features,mdp,mdp_data,example_samples)
+function infos = trajinfos(features,mdp,mdp_data_arr,example_samples)
 
 % Compute constants.
 N = length(example_samples);
@@ -7,7 +7,8 @@ F = length(features);
 
 % Allocate trajectory infos.
 infos = cell(1,N);
-for i=1:N,    
+for i=1:N,
+    mdp_data = mdp_data_arr{i};    
     % Get controls and initial state.
     x = example_samples{i}.s;
     u = example_samples{i}.u;

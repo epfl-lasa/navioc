@@ -6,7 +6,7 @@ Nu = size(u, 2);
 Nx = size(states, 2);
 
 idx = (1:Nu) + Nu*reward.order;
-err = states(:, idx) - reward.x_des;
+err = states(:, idx) - mdp_data.x_des{reward.order};% reward.x_des;
 r = 0.5*sum(err.^2, 2);
 if nargout >= 2
 	drdx = zeros(Nt, Nx);
