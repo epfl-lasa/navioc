@@ -13,7 +13,7 @@ reg_feature = struct('type','reg');
 features = [features reg_feature];
 
 % Create random initial weights.
-theta = randn(length(features),1)*0.01;
+theta = abs(randn(length(features),1)*0.01);
 theta(1) = 1.0;
 theta(end) = 0.0;
 

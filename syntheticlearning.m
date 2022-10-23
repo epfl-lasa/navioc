@@ -24,7 +24,7 @@ mdp_data = struct(...
 mdp = 'crowdworld';
 
 features_dyn = {... control-dependent features
-	struct('type', 'jerk2sum', 'scaling', -1)
+	struct('type', 'jerk2sum')
 };
 
 features_pt = {... state-dependent features
@@ -35,7 +35,7 @@ features_pt = {... state-dependent features
     struct('type', 'along2sum') ...
 };
 
-theta = [1, -0.5*ones(size(features_pt))];
+theta = [1, 0.5*ones(size(features_pt))];
 
 reward = struct(... linear combination (sum) of features, with weights theta
 	'type', 'sum', ...

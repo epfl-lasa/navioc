@@ -5,18 +5,27 @@ Nt = size(u, 1);
 Nu = size(u, 2);
 Nx = size(states, 2);
 
-r = 0.5*sum(u.^2, 2)*reward.scaling;
+r = 0.5*sum(u.^2, 2);
 if nargout >= 2
-    g = u*reward.scaling;
+    g = u;
 end
 
 if nargout >= 3
-    drdu = u*reward.scaling;
-    d2rdudu = repmat(reshape(eye(Nu), [1, Nu, Nu]), [Nt, 1, 1])*reward.scaling;
+    drdu = u;
+    d2rdudu = repmat(reshape(eye(Nu), [1, Nu, Nu]), [Nt, 1, 1]);
 end
 
 if nargout >= 5
     drdx = zeros(Nt, Nx);
     d2rdxdx = zeros(Nt, Nx, Nx);
     %disp(reward.type)
+end
+
+r = -r;
+if nargout >= 2
+    g = -g;
+end
+if nargout >= 3
+    drdu = -drdu;
+    d2rdudu = -d2rdudu;
 end
