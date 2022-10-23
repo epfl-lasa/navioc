@@ -79,6 +79,16 @@ for i = 1:2
 	test_samples{i} = test_samples_i{1};
 end
 
+example_samples_pert = cell(1, length(example_samples));
+for i = 1:length(example_samples)
+    example_samples_pert{i} = struct();
+    example_samples_pert{i}.u = example_samples{i}.u + 0.05*randn(size(example_samples{i}.u));
+    example_samples_pert{i}.s = example_samples{i}.s;
+    example_samples_pert{i}.states = crowdworldcontrol(mdp_data_arr{i}, example_samples{i}.s, example_samples_pert{i}.u);
+end
+
+example_samples = example_samples_pert;
+
 addpath cioc/Auglag
 addpath cioc/Laplace
 

@@ -1,0 +1,17 @@
+- non-causal
+	- very smooth
+	- less smooth
+- causal
+
+- with interaction
+- without interaction
+
+- single agent
+- two agents
+- multiple agents
+
+- reoptimize test trajectory
+- reoptimize training trajectory
+
+- synthetic samples
+- real samples
