@@ -14,15 +14,19 @@ features_dyn = {... control-dependent features
 	struct('type', 'jerk2sum')
 };
 features_pt = {... state-dependent features
-	struct('type', 'iesum'), ...
-	struct('type', 'xerr2sum', 'order', 1), ...
-    struct('type', 'xerr2sum', 'order', 2), ...
-    struct('type', 'aleft2sum'), ...
+	struct('type', 'iesum') ...
+	struct('type', 'xerr2sum', 'order', 1) ...
+    ...struct('type', 'xerr2sum', 'order', 2) ...
+    struct('type', 'aleft2sum') ...
     struct('type', 'along2sum') ...
+    struct('type', 'xerr4sum', 'order', 2) ...
+    ...struct('type', 'aleft4sum') ...
+    ...struct('type', 'along4sum') ...
 };
 
-sample = pairforged(1e-5, 0, 1);
+sample = pairforged(1e-5, 0, 1.5);
 addpath Visualization
+figure
 playsample(sample, mdp_data_arr{1});
 
 addpath Features
@@ -39,6 +43,25 @@ irl_result = amerun(struct(), 'crowdworld', mdp_data_arr,...
 
 disp('Theta normalized')
 disp(irl_result.reward.theta/abs(irl_result.reward.theta(1)))
+
+
+test_params = struct(...
+	'training_sample_lengths', size(sample.u, 1), ... number of time steps in any training sample
+	'test_samples', 0, ... number of test samples
+	'training_samples', 1, ... number of training samples
+	'test_restarts', 1, ... number of repetitions of local optimizations to generate a test sample
+	'example_restarts', 1, ... number of repetitions of local optimizations to generate a training sample
+	'test_optimal', false, ... are test samples globally optimal?
+	'example_optimal', false, ... are training samples globally optimal?
+	'example_recompute_optimal', false ... are re-optimized examples globally optimal?
+);
+
+[re_samples, ~] = resampleexamples(mdp_data_arr{1}, 'crowdworld', ...
+	irl_result.reward, irl_result.reward, test_params, {sample}, {}, true);
+figure
+playsample(re_samples{1}, mdp_data_arr{1});
+
+%mdp_data,mdp,reward,true_reward,test_params,old_examples,old_tests,verbose
 
 function sample = pairforged(s, x_shift, y_scale)
 	h = 0.05;

@@ -16,15 +16,25 @@ Vy = states(:, vy_jj);
 Ax = states(:, ax_jj);
 Ay = states(:, ay_jj);
 
+V2 = Vx.^2 + Vy.^2;
+Vmag = sqrt(V2);
 VcrossA = Vx.*Ay - Vy.*Ax;
-r = 0.5*sum(VcrossA.^2, 2);
+Aleft = VcrossA./Vmag;
+
+r = 0.5*sum(Aleft.^2, 2);
 
 if nargout >= 2
+	dAleftdVx = (Ay.*Vmag - Aleft.*Vx)./V2;
+	dAleftdVy = (-Ax.*Vmag - Aleft.*Vy)./V2;
+	dAleftdAx = -Vy./Vmag;
+	dAleftdAy = Vx./Vmag;
+
 	drdx = zeros(Nt, Nx);
-	drdx(:, vx_jj) = Ay.*VcrossA;
-	drdx(:, vy_jj) = -Ax.*VcrossA;
-	drdx(:, ax_jj) = -Vy.*VcrossA;
-	drdx(:, ay_jj) = Vx.*VcrossA;
+	drdx(:, vx_jj) = Aleft.*dAleftdVx;
+	drdx(:, vy_jj) = Aleft.*dAleftdVy;
+	drdx(:, ax_jj) = Aleft.*dAleftdAx;
+	drdx(:, ay_jj) = Aleft.*dAleftdAy;
+
 	g = permute(gradprod(A,B,permute(drdx,[1 3 2])),[1 3 2]);
 end
 if nargout >= 3
@@ -32,28 +42,41 @@ if nargout >= 3
 	d2rdudu = zeros(Nt, Nu, Nu);
 end
 if nargout >= 6
+	d2AleftdVxdVx = ((Ay.*Vx./Vmag - Aleft - Vx.*dAleftdVx).*V2 - (...
+		Ay.*Vmag - Aleft.*Vx).*Vx*2)./V2.^2;
+	d2AleftdVxdVy = ((Ay.*Vy./Vmag - Vx.*dAleftdVy).*V2 - (...
+		Ay.*Vmag - Aleft.*Vx).*Vy*2)./V2.^2;
+	d2AleftdVxdAx = Vx.*Vy./V2./Vmag;
+	d2AleftdVxdAy = (1 - Vx.^2./V2)./Vmag;
+
+	d2AleftdVydVy = ((-Ax.*Vy./Vmag - Aleft - Vy.*dAleftdVy).*V2 - (...
+		-Ax.*Vmag - Aleft.*Vy).*Vy*2)./V2.^2;
+	d2AleftdVydAx = (-1 + Vy.^2./V2)./Vmag;
+	d2AleftdVydAy = -Vx.*Vy./V2./Vmag;
+
 	d2rdxdx = zeros(Nt, Nx, Nx);
 
-	d2rdxdx(:, vx_jj, vx_jj) = Ay.^2.*repmat(reshape(eye(Nag), [1, Nag, Nag]), [Nt, 1, 1]);
-	d2rdxdx(:, vx_jj, vy_jj) = -Ay.*Ax.*repmat(reshape(eye(Nag), [1, Nag, Nag]), [Nt, 1, 1]);
-	d2rdxdx(:, vx_jj, ax_jj) = -Ay.*Vy.*repmat(reshape(eye(Nag), [1, Nag, Nag]), [Nt, 1, 1]);
-	d2rdxdx(:, vx_jj, ay_jj) = (2*Vx.*Ay - Vy.*Ax).*repmat(reshape(eye(Nag), [1, Nag, Nag]), [Nt, 1, 1]);
+	base = repmat(reshape(eye(Nag), [1, Nag, Nag]), [Nt, 1, 1]);
+	
+	d2rdxdx(:, vx_jj, vx_jj) = (Aleft.*d2AleftdVxdVx + dAleftdVx.^2).*base;
+	d2rdxdx(:, vx_jj, vy_jj) = (Aleft.*d2AleftdVxdVy + dAleftdVx.*dAleftdVy).*base;
+	d2rdxdx(:, vx_jj, ax_jj) = (Aleft.*d2AleftdVxdAx + dAleftdVx.*dAleftdAx).*base;
+	d2rdxdx(:, vx_jj, ay_jj) = (Aleft.*d2AleftdVxdAy + dAleftdVx.*dAleftdAy).*base;
 
 	d2rdxdx(:, vy_jj, vx_jj) = d2rdxdx(:, vx_jj, vy_jj);
-	d2rdxdx(:, vy_jj, vy_jj) = Ax.^2.*repmat(reshape(eye(Nag), [1, Nag, Nag]), [Nt, 1, 1]);
-	d2rdxdx(:, vy_jj, ax_jj) = (2*Vy.*Ax - Vx.*Ay).*repmat(reshape(eye(Nag), [1, Nag, Nag]), [Nt, 1, 1]);
-	d2rdxdx(:, vy_jj, ay_jj) = -Ax.*Vx.*repmat(reshape(eye(Nag), [1, Nag, Nag]), [Nt, 1, 1]);
+	d2rdxdx(:, vy_jj, vy_jj) = (Aleft.*d2AleftdVydVy + dAleftdVy.^2).*base;
+	d2rdxdx(:, vy_jj, ax_jj) = (Aleft.*d2AleftdVydAx + dAleftdVy.*dAleftdAx).*base;
+	d2rdxdx(:, vy_jj, ay_jj) = (Aleft.*d2AleftdVydAy + dAleftdVy.*dAleftdAy).*base;
 
 	d2rdxdx(:, ax_jj, vx_jj) = d2rdxdx(:, vx_jj, ax_jj);
 	d2rdxdx(:, ax_jj, vy_jj) = d2rdxdx(:, vy_jj, ax_jj);
-	d2rdxdx(:, ax_jj, ax_jj) = Vy.^2.*repmat(reshape(eye(Nag), [1, Nag, Nag]), [Nt, 1, 1]);
-	d2rdxdx(:, ax_jj, ay_jj) = -Vx.*Vy.*repmat(reshape(eye(Nag), [1, Nag, Nag]), [Nt, 1, 1]);
+	d2rdxdx(:, ax_jj, ax_jj) = dAleftdAx.^2.*base;
+	d2rdxdx(:, ax_jj, ay_jj) = dAleftdAx.*dAleftdAy.*base;
 
 	d2rdxdx(:, ay_jj, vx_jj) = d2rdxdx(:, vx_jj, ay_jj);
 	d2rdxdx(:, ay_jj, vy_jj) = d2rdxdx(:, vy_jj, ay_jj);
 	d2rdxdx(:, ay_jj, ax_jj) = d2rdxdx(:, ax_jj, ay_jj);
-	d2rdxdx(:, ay_jj, ay_jj) = Vx.^2.*repmat(reshape(eye(Nag), [1, Nag, Nag]), [Nt, 1, 1]);
-    %disp(reward.type)
+	d2rdxdx(:, ay_jj, ay_jj) = dAleftdAy.^2.*base;
 end
 
 r = -r;
