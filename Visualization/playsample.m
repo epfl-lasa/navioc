@@ -19,7 +19,7 @@ for i = 1:size(Px, 1)
 	%scatter(X, Y, 20, C)
 	delete(tmp_handles)
 	hold on
-	if mod(i, 10) == 0
+	if mod(i, 1) == 0
 		w0 = i/size(Px, 1);
 		w1 = 1 - w0;
 		for j = 1:n
