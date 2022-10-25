@@ -28,7 +28,10 @@ disp('d2rdxdx - relative error')
 disp(rel_error(d2rdxdx, d2rdxdx_fd))
 
 function err = abs_error(a, b)
-err = max(abs(a - b), [], 'all');
+d = reshape(a - b, [numel(a), 1]);
+err = max(abs(d));
 
 function err = rel_error(a, b)
-err = max(abs(a(a ~= 0) - b(a ~= 0))./abs(a(a ~= 0)), [], 'all');
+a_ = reshape(a, [numel(a), 1]);
+b_ = reshape(b, [numel(a), 1]);
+err = max(abs(a_(a_ ~= 0) - b_(a_ ~= 0))./abs(a_(a_ ~= 0)));
