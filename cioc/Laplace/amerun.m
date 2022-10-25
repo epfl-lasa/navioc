@@ -13,9 +13,14 @@ reg_feature = struct('type','reg');
 features = [features reg_feature];
 
 % Create random initial weights.
-theta = abs(randn(length(features),1)*0.01);
+theta = randn(length(features),1)*0.01;
 theta(1) = 1.0;
 theta(end) = 0.0;
+for i = 1:(length(features) - 1)
+    if isfield(features{i}, 'w0')
+        theta(i) = features{i}.w0;
+    end
+end
 
 % Create sum reward.
 reward = struct('type','sum','theta',theta,'features',{features});

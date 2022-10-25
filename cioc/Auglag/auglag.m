@@ -8,7 +8,7 @@ AUGLAG_POWER = 1; % Exponent to raise constraint to.
 REG_TOL = 1.0e-5; % Tolerance for constraint satisfaction.
 INIT_MIN = 1.0e-2; % Minimum initial mu.
 INIT_MAX = 1.0e2; % Maximum initial mu.
-MAX_ITERATIONS = 20;
+MAX_ITERATIONS = 200;
 USE_EXP = 1; % Use exponential transform to enforce positivity.
 
 % Set up optimization options.
