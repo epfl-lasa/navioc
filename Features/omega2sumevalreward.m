@@ -76,12 +76,3 @@ if nargout >= 6
 	d2rdxdx(:, ay_jj, ax_jj) = d2rdxdx(:, ax_jj, ay_jj);
 	d2rdxdx(:, ay_jj, ay_jj) = dOmdAy.^2.*base;
 end
-
-r = -r;
-if nargout >= 2
-	drdx = -drdx;
-	g = -g;
-end
-if nargout >= 6
-	d2rdxdx = -d2rdxdx;
-end

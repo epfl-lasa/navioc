@@ -14,7 +14,7 @@ features = [features reg_feature];
 
 % Create random initial weights.
 theta = randn(length(features),1)*0.01;
-theta(1) = 1.0;
+theta(1) = -1.0;
 theta(end) = 0.0;
 for i = 1:(length(features) - 1)
     if isfield(features{i}, 'w0')

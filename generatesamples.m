@@ -47,7 +47,7 @@ for i = 1:2
         ...struct('type', 'along4sum') ...
 	};
 
-	theta = [1, 0.5*ones(size(features_pt))];
+	theta = -[1, 0.5*ones(size(features_pt))];
 
 	reward = struct(... linear combination (sum) of features, with weights theta
 		'type', 'sum', ...

@@ -20,12 +20,3 @@ if nargout >= 5
     d2rdxdx = zeros(Nt, Nx, Nx);
     %disp(reward.type)
 end
-
-r = -r;
-if nargout >= 2
-    g = -g;
-end
-if nargout >= 3
-    drdu = -drdu;
-    d2rdudu = -d2rdudu;
-end

@@ -55,12 +55,3 @@ if nargout >= 6
 	d2rdxdx(:, ay_jj, ay_jj) = Vx.^2.*repmat(reshape(eye(Nag), [1, Nag, Nag]), [Nt, 1, 1]);
     %disp(reward.type)
 end
-
-r = -r;
-if nargout >= 2
-	drdx = -drdx;
-	g = -g;
-end
-if nargout >= 6
-	d2rdxdx = -d2rdxdx;
-end

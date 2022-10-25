@@ -24,12 +24,3 @@ if nargout >= 6
 		r1.*repmat(reshape(eye(Nu), [1, Nu, Nu]), [Nt, 1, 1]);
     %disp(reward.type)
 end
-
-r = -r;
-if nargout >= 2
-    drdx = -drdx;
-    g = -g;
-end
-if nargout >= 6
-    d2rdxdx = -d2rdxdx;
-end
