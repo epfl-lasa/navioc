@@ -1,4 +1,7 @@
 function playsample(sample, mdp_data, no_video)
+%pause(0.01) % switch to newest figure
+figure
+pause(0.1)
 if nargin < 3
 	no_video = false;
 end

@@ -30,6 +30,11 @@ disp(rel_error(d2rdxdx, d2rdxdx_fd))
 function err = abs_error(a, b)
 d = reshape(a - b, [numel(a), 1]);
 err = max(abs(d));
+% if length(size(a)) == 3
+% 	disp('Diag')
+% 	disp(reshape(max(abs(a - b), [], 1), [size(a, 2), size(a, 2)]))
+% 	disp('end')
+% end
 
 function err = rel_error(a, b)
 a_ = reshape(a, [numel(a), 1]);
