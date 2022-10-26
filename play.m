@@ -23,6 +23,7 @@ while true
 
 	XY = ones(length(bins.registries{i}), 2)*nan;
 	XY_fit = XY;
+	%Vdes = XY;
 	is_wheelchair = logical(zeros(length(bins.registries{i}), 1));
 	is_stroller = logical(zeros(length(bins.registries{i}), 1));
 	for l = 1:length(bins.registries{i})
@@ -56,6 +57,9 @@ while true
 				XY_fit(l, :) = interpolate(t, ...
 					tracks_fits{k}.fit.T_opt(m), [tracks_fits{k}.fit.X_opt(m, 1), tracks_fits{k}.fit.X_opt(m, 2)], ...
 					tracks_fits{k}.fit.T_opt(m+1), [tracks_fits{k}.fit.X_opt(m+1, 1), tracks_fits{k}.fit.X_opt(m+1, 2)]);
+				%Vdes(l, :) = interpolate(t, ...
+				%	tracks_fits{k}.fit.T_opt(m), [tracks_fits{k}.v_des(m, 1), tracks_fits{k}.v_des(m, 2)], ...
+				%	tracks_fits{k}.fit.T_opt(m+1), [tracks_fits{k}.v_des(m+1, 1), tracks_fits{k}.v_des(m+1, 2)]);
 			end
 		end
 	end
@@ -74,6 +78,8 @@ while true
 
 	plot(XY(is_stroller, 1), XY(is_stroller, 2), "ks")
 	plot(XY_fit(is_stroller, 1), XY_fit(is_stroller, 2), "rs")
+
+	%quiver(XY_fit(:, 1), XY_fit(:, 2), Vdes(:, 1), Vdes(:, 2))
 
 	text(XY(:, 1), XY(:, 2), string(bins.registries{i}))
 	hold off
