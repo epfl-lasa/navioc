@@ -1,6 +1,7 @@
-function playsample(sample, mdp_data, no_video)
+function fig = playsample(sample, mdp_data, no_video, x_limits, y_limits, walls)
 %pause(0.01) % switch to newest figure
-figure
+fig = figure('Position', [300, 600, 2000, 600]);
+ax = axes(fig);
 pause(0.1)
 if nargin < 3
 	no_video = false;
@@ -15,8 +16,17 @@ C = C(1:n, :);
 states = [sample.s; sample.states];
 Px = states(:, 1:2:mdp_data.udims);
 Py = states(:, 2:2:mdp_data.udims);
-x_limits = [min_(Px) - 0.2, max_(Px) + 0.2];
-y_limits = [min_(Py) - 0.2, max_(Py) + 0.2];
+if nargin < 5
+	x_limits = [min_(Px) - 0.2, max_(Px) + 0.2];
+	y_limits = [min_(Py) - 0.2, max_(Py) + 0.2];
+end
+if nargin >= 6
+	hold(ax, 'on')
+	for w = 1:size(walls, 1)
+		plot(ax, walls(w, 1:2), walls(w, 3:4), "k")
+	end
+	hold(ax, 'off')
+end
 tmp_handles = [];
 for i = 1:size(Px, 1)
 	X = Px(i, :)';
@@ -24,31 +34,37 @@ for i = 1:size(Px, 1)
 	
 	%scatter(X, Y, 20, C)
 	delete(tmp_handles)
-	hold on
+	hold(ax, 'on')
 	if mod(i, 1) == 0
 		w0 = i/size(Px, 1);
 		w1 = 1 - w0;
 		for j = 1:n
-			plotcircle(X(j), Y(j), 0.2, C(j, :)*w0 + w1);
+			plotcircle(ax, X(j), Y(j), 0.2, C(j, :)*w0 + w1);
 		end
 	end	
 	tmp_handles = [];
 	for j = 1:n
-		h = plotcircle(X(j), Y(j), 0.2, C(j, :));
+		h = plotcircle(ax, X(j), Y(j), 0.2, C(j, :));
 		tmp_handles = [tmp_handles, h];
 	end
+	UV = reshape(mdp_data.v_des, [2, n])';
+	h = quiver(ax, X, Y, UV(:, 1), UV(:, 2), 0, 'Color', 'k');
+	tmp_handles = [tmp_handles, h];
 	
-	xlim(x_limits)
-	ylim(y_limits)
-	daspect([1, 1, 1])
+	xlim(ax, x_limits)
+	ylim(ax, y_limits)
+	daspect(ax, [1, 1, 1])
 	if ~no_video
 		pause(0.05)
+		if isobject(fig) & ~isgraphics(fig)
+			break
+		end
 	end
 end
 pause(0.05)
 
-function h = plotcircle(x, y, r, c)
-h = rectangle('Position', [x - r, y - r, 2*r, 2*r], ...
+function h = plotcircle(ax, x, y, r, c)
+h = rectangle(ax, 'Position', [x - r, y - r, 2*r, 2*r], ...
 	'Curvature',[1, 1], 'FaceColor', c, 'EdgeColor', c);
 
 function C = colororder

@@ -11,5 +11,9 @@ Indicators = zeros(m, N_x + 1);
 Indicators((1:m)' + m*(J-1)) = 1;
 
 Counts = sum(Indicators, 1);
-[~, k_max] = max(Counts(1, 1:N_x));
-x_max = cx(k_max);
+if Counts(1, N_x + 1) == m % all data is outside the limits
+	x_max = nan;
+else
+	[~, k_max] = max(Counts(1, 1:N_x));
+	x_max = cx(k_max);
+end
