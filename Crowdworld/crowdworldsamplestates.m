@@ -6,7 +6,7 @@ if strcmp(mdp_data.state_sampling_method, 'corridor')
 	pos = (2*rand(n, mdp_data.udims) - 1).*poslimrep;
 	s = [pos, mdp_data.v_des, zeros(1, mdp_data.udims)];
 elseif strcmp(mdp_data.state_sampling_method, 'pair')
-	pos = -4*mdp_data.v_des + randn*[1, 0, -1, 0] + randn*[0, 1, 0, -1]/50;
+	pos = -6*mdp_data.v_des + randn*[1, 0, -1, 0] + randn*[0, 1, 0, -1]/50;
 	s = [pos, mdp_data.v_des, zeros(1, mdp_data.udims)];
 else % 'random'
 	poslim = [mdp_data.half_width, mdp_data.half_height];

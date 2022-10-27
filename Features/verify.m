@@ -4,8 +4,8 @@ function verify(reward, mdp_data, x, u, dx, du)
 
 f = strcat(reward.type, 'evalreward');
 
-[r, g, drdu, d2rdudu, drdx, d2rdxdx] = feval(...
-	f, reward, mdp_data, x, u, states, A, B);
+[r, g, drdu, d2rdudu, drdx, d2rdxdx] = feval(f, ...
+	reward, mdp_data, x, u, states, A, B);
 
 drdx_fd = zeros(size(drdx));
 d2rdxdx_fd = zeros(size(d2rdxdx));
