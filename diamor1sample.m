@@ -13,6 +13,7 @@ samples = {};
 for i = 1:6
 	samples = [samples, selectsamples(i, pos_cond, 97)];
 end
+%save('samples_diamor_1.mat', 'samples')
 
 mdp_data_arr = cell(1, length(samples));
 n_agents_arr = zeros(1, length(samples));
