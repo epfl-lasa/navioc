@@ -5,7 +5,7 @@ R = 0.4;
 R2 = R^2;
 eps1 = 0.22*R2;
 eps2 = 0.01;
-s = 10.0;
+s = reward.a;
 
 % dimensions
 Nt = size(u, 1);
