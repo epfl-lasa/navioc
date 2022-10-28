@@ -11,7 +11,8 @@ pos_cond = @(X) any(...
 
 samples = {};
 for i = 1:6
-	samples = [samples, selectsamples(i, pos_cond, 97)];
+	fit_batch = vario(sprintf('fit_batches/batch_%i.mat', i), 'fit_batch');
+	samples = [samples, selectsamples(fit_batch, pos_cond, 97)];
 end
 %save('samples_diamor_1.mat', 'samples')
 
@@ -20,7 +21,7 @@ n_agents_arr = zeros(1, length(samples));
 
 for i = 1:length(samples)
 
-	n_agents = length(samples{i}.s)/6;
+	n_agents = length(samples{i}.s)/4;
 	n_agents_arr(i) = n_agents;
 
 	delta_x = samples{i}.states(end, 1:2:(2*n_agents)) - ...
@@ -34,11 +35,8 @@ for i = 1:length(samples)
 	mdp_data_arr{i} = struct(...
 		'time_step', 0.05, ... [s]
 		'n_ped', n_agents, ...
-		'dims', 6*n_agents, ... positions, velocities, accelerations
-		'udims', 2*n_agents, ... jerks
-		...'half_width', max(abs([x_min, x_max])), ... [m]
-		...'half_height', max(abs([y_min, y_max])), ... [m]
-		'x_des', {{v_des, zeros(size(v_des))}}, ...
+		'dims', 4*n_agents, ... positions, velocities
+		'udims', 2*n_agents, ... accelerations
 		'v_des', v_des ...
 	);
 end
