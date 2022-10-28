@@ -48,7 +48,7 @@ title("Number of agents per sample")
 pause(1)
 
 addpath Visualization
-walls = getfield(load('/media/gonond/LaCieG/large-datasets-cri/walls_diamor_1.mat'), 'walls');
+walls = vario('walls_diamor_1.mat', 'walls');
 fprintf('\nSample    ')
 for i = 1:length(samples)
 	fprintf('\b\b\b')
