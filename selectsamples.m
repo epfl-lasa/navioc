@@ -1,11 +1,10 @@
 function samples = selectsamples(ij, position_condition, N_steps)
-root = '/media/gonond/LaCieG/large-datasets-cri/';
 if length(ij) == 2
 	s1 = sprintf('s_p00001/fit_batches_vdes/fit_batch_%i_%i.mat', ij(1), ij(2));	
 else
 	s1 = sprintf('s_p00001/fit_batches_vdes/fit_batch_%i.mat', ij);
 end
-fit_batch = getfield(load(strcat(root, s1)), 'fit_batch');
+fit_batch = vario(s1, 'fit_batch');
 
 h = 0.05;
 t_1 = fit_batch.window(1);

@@ -8,8 +8,7 @@ else
 	s2 = sprintf('s_p00001/fit_batches_vdes/fit_batch_%i.mat', i);
 end
 
-root = '/media/gonond/LaCieG/large-datasets-cri/';
-fit_batch = getfield(load(strcat(root, s1)), 'fit_batch');
+fit_batch = vario(s1, 'fit_batch');
 
 for i = 1:length(fit_batch.fits)
 	if ~fit_batch.fits{i}.empty
@@ -19,4 +18,4 @@ for i = 1:length(fit_batch.fits)
 	end
 end
 
-save(strcat(root, s2), 'fit_batch');
+vario(s2, 'fit_batch', fit_batch);

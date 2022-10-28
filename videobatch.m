@@ -1,8 +1,7 @@
 function videobatch(i, j)
-root = '/media/gonond/LaCieG/large-datasets-cri/';
 
 if i <= 6
-	walls = getfield(load(strcat(root, 'walls_diamor_1.mat')), 'walls');
+	walls = vario('walls_diamor_1.mat', 'walls');
 else
 	walls = [];
 end
@@ -12,10 +11,10 @@ if nargin == 2
 else
 	s1 = sprintf('s_p00001/fit_batches/fit_batch_%i.mat', i);
 end
-fit_batch = getfield(load(strcat(root, s1)), 'fit_batch');
+fit_batch = vario(s1, 'fit_batch');
 
 s2 = sprintf('batches/batch_%i.mat', i);
-batch = getfield(load(strcat(root, s2)), 'batch');
+batch = vario(s2, 'batch');
 
 bins = bindata(batch.tracks, 20.0);
 t1 = fit_batch.window(1) - bins.t_min;
