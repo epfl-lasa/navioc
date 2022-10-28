@@ -1,0 +1,221 @@
+<html><head>
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type">
+    <link href="Pedestrian%20group%20dataset_files/default.css" rel="stylesheet" type="text/css">
+    <title>Pedestrian group dataset</title>
+  </head>
+  <body>
+    <h1>Dataset: Pedestrian tracking with group annotations</h1>
+    <p>
+		Here we provide multiple datasets containing the pedestrian position 
+and group data. The tracking of pedestrians was done using automatic 
+tracking systems, whereas the groups were labeled manually. The data was
+ taken in two environments: "DIAMOR" and "ATC".
+	</p>
+	<p>
+		The DIAMOR environment datasets were taken in two large straight corridors connecting the <i>Diamor</i>
+ shopping centre in Osaka, Japan, with the railway station. The 
+pedestrian tracking was done using multiple laser range finders, using 
+the method described in reference [3].
+	</p>
+	<p>
+		The ATC environment datasets were taken in part of the <i>ATC (Asia and Pacific Trade Center)</i>
+ shopping and business center in Osaka, Japan. The tracking of 
+pedestrians in this environment was done using 3-D range sensors. For 
+more details see [4]. For additional data from this environment you can 
+also check the <a href="http://www.irc.atr.jp/crest2010_HRI/ATC_dataset/">ATC dataset page</a>.
+	</p>
+	<p>
+		All annotations were done by a single coder (note: this is different 
+from [1], where an agreement between two coders was used). Apart from 
+group annotations, consisting of IDs of all pedestrians in the group, 
+the socially interacting partners are also annotated (the definition of 
+social interaction is given in [1]).
+	</p>
+	
+	
+<!--<img src="approach.png">-->
+	<div>
+			<h2>Datasets</h2>
+
+			<p>
+				The dataset contains 8 experiment days, 2 in the DIAMOR environment 
+and 6 in the ATC environment. For each day the data for 4 1-hour periods
+ is provided: 10:00-11:00, 12:00-13:00, 15:00-16:00, 19:00-20:00.<br>
+				The data is provided as zip compressed files, one file per 
+experiment day. Each zip file contains one or more files containing the 
+person tracking data (<i>person_[DATASET_NAME]_[TIME].csv</i>) and one containing the group annotations (<i>groups_[DATASET_NAME].dat</i>).
+			</p>
+			<p>
+				<u>Person tracking files</u> contain the data for <b>all</b> persons
+ that were tracked in the environment on a given day and period of time.
+ Each row corresponds to a single tracked person at a single instant, 
+and it contains the following 8 fields (<i>comma separated values</i>):<br>
+				TIME [s] (unixtime + milliseconds/1000), PEDESTRIAN_ID, POSITION_X 
+[mm], POSITION_Y [mm], POSITION_Z (height) [mm], VELOCITY [mm/s], 
+ANGLE_OF_MOTION (direction of velocity vector) [rad], FACING_ANGLE (body
+ direction) [rad]
+				</p><ul>
+					<li>
+						In the DIAMOR environment data the tracking was done with laser 
+range finders, so there is no height infromation, i.e. POSITION_Z is 
+always 0.
+					</li>
+					<li>
+						The tracking systems in DIAMOR and ATC have different characteristics. See [1] and additional references for details.
+					</li>
+				</ul>
+			<p></p>
+			<p>
+				<u>Group files</u> contain the group annotations for the given day. 
+Only pedestrians in groups are listed, pedestrians walking alone are not
+ included. Each row corresponds to a single tracked pedestrian inside 
+one group, and it contains the following fields  (<i>space separated values</i>):<br>
+				PEDESTRIAN_ID&nbsp;&nbsp;GROUP_SIZE&nbsp;&nbsp;PARTNER_ID_1 ... 
+(list of ids of all other pedestrians in 
+group)&nbsp;&nbsp;NUMBER_OF_INTERACTING_PARTNERS&nbsp;&nbsp;INTERACTION_PARTNER_ID_1
+ ... (list of all socially interacting partners)<br>
+				</p><ul>
+					<li>
+						The PEDESTRIAN_ID can take the following special values:
+						<ul>
+						<li>
+							-1 = pedestrian without ID (i.e. not tracked by the system)
+						</li>
+						<li>
+							negative value = not a person, i.e. either a baby carriage/stroller, or a wheelchair. <br>In this case the PEDESTRIAN_ID can be followed by a negative number with the following meaning:<br>
+							-2 = wheelchair,<br>
+							-3 = automatic wheelchair,<br>
+							no negative number (the number after PEDESTRIAN_ID is positive, i.e. GROUP_SIZE) = baby carriage/stroller.
+						</li>
+						</ul>
+					</li>
+					<li>
+						When a pedestrian has multiple IDs (if the tracking was 
+interrupted and then re-started), the first ID is followed by a zero in 
+the second field, then by the total number of IDs belonging to that 
+pedestrian, and the remaining IDs. After that the row continues with 
+group size, etc., as written above.
+					</li>
+					<li>
+						Pedestrians tracked twice in different groups are considered as 
+different pedestrians (even if with the same ID) and they have no 
+special notation.
+					</li>
+					<li>
+						The number of fields in each line are different depending on the size of groups and the number of interacting partners.
+					</li>
+					<li>
+						Even though the person tracking files for the ATC environment 
+contain the data for pedestrians in the whole environment, the <u>group labeling was done only in a part of the corridor</u>
+ (approximatelly in the westmost one third of the corridor, close to the
+ central hall). Groups that did not move through this area were not 
+labeled!
+					</li>
+				</ul>
+			<p></p>
+			
+			<table>
+			<tbody><tr>
+			<th>Environment</th>
+			<th>Date</th>
+			<th>Times</th>
+			<th>File</th>
+			<th>File size</th>
+			</tr>
+			<tr>
+			<td rowspan="2">DIAMOR</td>
+			<td>2010/10/06 (Wed)</td>
+			<td>11:00-15:40</td>
+			<td><a href="https://dil.atr.jp/sets/groups/files/DIAMOR-1.zip">DIAMOR-1.zip</a></td>
+			<td>133 MB</td>
+			</tr>
+			<tr>
+			<td>2010/10/08 (Fri)</td>
+			<td>11:20-17:00</td>
+			<td><a href="https://dil.atr.jp/sets/groups/files/DIAMOR-2.zip">DIAMOR-2.zip</a></td>
+			<td>257 MB</td>
+			</tr>
+			<tr>
+			<td rowspan="6">ATC</td>
+			<td>2013/01/09 (Wed)</td>
+			<td rowspan="6">10:00-11:00<br>12:00-13:00<br>15:00-16:00<br>19:00-20:00</td>
+			<td><a href="https://dil.atr.jp/sets/groups/files/ATC-1.zip">ATC-1.zip</a></td>
+			<td>171 MB</td>
+			</tr>
+			<tr>
+			<td>2013/02/17 (Sun)</td>
+			<td><a href="https://dil.atr.jp/sets/groups/files/ATC-2.zip">ATC-2.zip</a></td>
+			<td>366 MB</td>
+			</tr>
+			<tr>
+			<td>2013/03/24 (Sun)</td>
+			<td><a href="https://dil.atr.jp/sets/groups/files/ATC-3.zip">ATC-3.zip</a></td>
+			<td>303 MB</td>
+			</tr>
+			<tr>
+			<td>2013/04/24 (Wed)</td>
+			<td><a href="https://dil.atr.jp/sets/groups/files/ATC-4.zip">ATC-4.zip</a></td>
+			<td>130 MB</td>
+			</tr>
+			<tr>
+			<td>2013/05/05 (Sun)</td>
+			<td><a href="https://dil.atr.jp/sets/groups/files/ATC-5.zip">ATC-5.zip</a></td>
+			<td>515 MB</td>
+			</tr>
+			<tr>
+			<td>2013/05/08 (Wed)</td>
+			<td><a href="https://dil.atr.jp/sets/groups/files/ATC-6.zip">ATC-6.zip</a></td>
+			<td>168 MB</td>
+			</tr>
+			</tbody></table> 
+            
+    </div>
+	<div>
+			<h2>License</h2>
+			<p>
+				The datasets are free to use for research purposes only.<br>
+				In case you use the datasets in your work please be sure to cite the
+ reference below: [1] (for the DIAMOR datasets) and [2] (for ATC 
+datasets).
+			</p>
+    </div>
+    <div>
+			<h2>References</h2>
+			<p>
+				Papers containing more details about the dataset:<br>
+				[1] F. Zanlungo, T. Ikeda, and T. Kanda, "Potential for the dynamics
+ of pedestrians in a socially interacting group," Physical Review E, 
+Vol. 89, No. 1, 012811, 2014<br>
+				[2] F. Zanlungo, D. Brscic, and T. Kanda, "Pedestrian group spatial 
+size scaling under growing density conditions," Physical review E, Vol. 
+91, No. 6, 062810, 2015
+			</p>
+			<p>
+			Additional references:<br>
+				<i>Tracking using laser range finders</i>:<br>
+				[3] D. Glas, T. Miyashita, H. Ishiguro and N. Hagita, "Laser-based 
+tracking of human position and orientation using parametric shape 
+modeling," Advanced robotics, Vol. 23, No. 4, pp. 405-428, 2009<br>
+				<i>Tracking using 3-D range finders and ATC environment</i>:<br>
+				[4] D. Brscic, T. Kanda, T. Ikeda, T. Miyashita, "Person position 
+and body direction tracking in large public spaces using 3-D range 
+sensors," IEEE Transactions on Human-Machine Systems, Vol. 43, No. 6, 
+pp. 522-534, 2013 
+			</p>
+	</div>
+	<div>
+			<h2>Inquiries and feedback</h2>
+			<p>
+				For any questions concerning the datasets please contact: <br>
+				<img src="Pedestrian%20group%20dataset_files/mail.png">
+			</p>
+    </div>
+    
+    <footer>
+      <hr> 
+	  Copyright (C), <a href="http://www.irc.atr.jp/">IRC-ATR</a>, 2015
+	</footer>
+  
+
+</body></html>
+<!-- Copyright, Intelligent Robotics and Communication Laboratories (IRC) of ATR, Japan. -->
