@@ -12,10 +12,12 @@ function fit_batch = addvdestobatch(fit_batch)%i, j)
 
 for i = 1:length(fit_batch.fits)
 	if ~fit_batch.fits{i}.empty
-		%Vmag = sqrt(sum(fit_batch.fits{i}.fit.V_opt.^2, 2));
+		Vmag = sqrt(sum(fit_batch.fits{i}.fit.V_opt.^2, 2));
+		vmag_mode = findmode(Vmag, [0.0, 2], 11);
 		VxAbs = abs(fit_batch.fits{i}.fit.V_opt(:, 1));
-		v_mode = findmode(VxAbs, [0.2, 2], 10);
-		fit_batch.fits{i}.v_des = v_mode;
+		vxabs_mode = findmode(VxAbs, [0.0, 2], 11);
+		fit_batch.fits{i}.vmag_des = vmag_mode;
+		fit_batch.fits{i}.vxabs_des = vxabs_mode;
 	end
 end
 

@@ -9,7 +9,8 @@ agg = struct(...
 	'U', zeros(T, N), ...
 	'def', logical([ones(T, n_traj), zeros(T, n_frag)]), ...
 	'type', zeros(1, n), ...
-	'v_des', zeros(1, n), ...
+	'vmag_des', zeros(1, n), ... 
+	'vxabs_des', zeros(1, n), ...
 	'n', n, ...
 	'n_traj', n_traj, ...
 	'n_frag', n_frag);
@@ -26,7 +27,9 @@ for i = 1:n_traj
 	elseif strcmp(group.trajlets{i}.type, "wheelchair_companion")
 		agg.type(i) = 3;
 	end
-	agg.v_des(i) = group.trajlets{i}.v_des;
+	%agg.v_des(i) = group.trajlets{i}.v_des;
+	agg.vmag_des(i) = group.trajlets{i}.vmag_des;
+	agg.vxabs_des(i) = group.trajlets{i}.vxabs_des;
 end
 for i = 1:n_frag
 	j = n_traj + i;
@@ -44,5 +47,7 @@ for i = 1:n_frag
 	elseif strcmp(group.fragments{i}.type, "wheelchair_companion")
 		agg.type(j) = 3;
 	end
-	agg.v_des(j) = group.fragments{i}.v_des;
+	%agg.v_des(j) = group.fragments{i}.v_des;
+	agg.vmag_des(j) = group.fragments{i}.vmag_des; 
+	agg.vxabs_des(j) = group.fragments{i}.vxabs_des; 
 end
