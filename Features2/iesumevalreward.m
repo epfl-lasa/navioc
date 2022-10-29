@@ -1,11 +1,11 @@
 function [r, g, drdu, d2rdudu, drdx, d2rdxdx, gfull, Hfull] = iesumevalreward(reward, mdp_data, x, u, states, A, B, dxdu, d2xdudu)
 
 % parameters
-R = 0.4;
+R = reward.R;
 R2 = R^2;
 eps1 = 0.22*R2;
 eps2 = 0.01;
-s = 10.0;
+s = reward.a;
 
 % dimensions
 Nt = size(u, 1);

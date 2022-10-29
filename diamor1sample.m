@@ -9,9 +9,10 @@ pos_cond = @(X) any(...
 	X(:, 2:2:end) > y_min & ...
 	X(:, 2:2:end) < y_max, 1);
 
+exponent = -2;
 samples = {};
 for i = 1:6
-	fit_batch = vario(sprintf('fit_batches/batch_%i.mat', i), 'fit_batch');
+	fit_batch = vario(sprintf('fit_batches_s1e%i/batch_%i.mat', exponent, i), 'fit_batch');
 	samples = [samples, selectsamples(fit_batch, pos_cond, 97)];
 end
 
@@ -41,7 +42,7 @@ for i = 1:length(samples)
 end
 
 S = struct('samples', {samples}, 'mdp_data_arr', {mdp_data_arr});
-vario('samples_data_diamor_1.mat', 'samples_data', S);
+vario(sprintf('samples_data/diamor_1_s1e%i.mat', exponent), 'samples_data', S);
 
 histogram(n_agents_arr);
 title("Number of agents per sample")

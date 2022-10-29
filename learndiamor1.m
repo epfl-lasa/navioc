@@ -1,6 +1,8 @@
-samples_data = vario('samples_data_diamor_1.mat', 'samples_data');
-samples = samples_data.samples;
-mdp_data_arr = samples_data.mdp_data_arr;
+exponent = -6;
+samples_data = vario(sprintf('samples_data/diamor_1_s1e%i.mat', exponent), 'samples_data');
+%samples_data = vario('samples_data_diamor_1.mat', 'samples_data');
+samples = samples_data.samples(22:25);
+mdp_data_arr = samples_data.mdp_data_arr(22:25);
 
 [features_pt, features_dyn] = definefeatures();
 
@@ -57,7 +59,7 @@ function [features_pt, features_dyn] = definefeatures()
 		struct('type', 'acc2sum')
 	};
 	features_pt = {... state-dependent features
-		struct('type', 'iesum', 'a', 25) ...
+		struct('type', 'iesum', 'a', 25, 'R', 0.4) ...
 		...struct('type', 'dinv2sum') ...
 		...struct('type', 'dmrinv2sum') ...
 		...struct('type', 'dgaussiansum', 'sigma', 0.2) ...

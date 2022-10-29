@@ -27,7 +27,8 @@ for i = 1:n_b
 	fits = cell(1, length(batches{i}.tracks));
 	for j = 1:length(batches{i}.tracks)
 		h = 0.05; % time step of each trajectory
-		s = 1e-6; % regularizer controlling smoothness
+		exponent = -2;
+		s = 10.^exponent; % regularizer controlling smoothness
 		N_max = 100; % maximum # of time steps per optimization
 		dt_extra = 5.0; % look ahead to additional data when splitting trajectory optimization
 		fits{j} = trackfit(batches{i}.tracks{j}, t1, t2, h, s, N_max, dt_extra);
@@ -51,5 +52,5 @@ for i = 1:n_b
 		'source', batches{i}.source, ...
 		'fits', {fits} ...
 	);
-	vario(sprintf('fit_batches/batch_%i.mat', i), 'fit_batch', fit_batches{i});
+	vario(sprintf('fit_batches_s1e%i/batch_%i.mat', exponent, i), 'fit_batch', fit_batches{i});
 end
