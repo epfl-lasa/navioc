@@ -14,7 +14,6 @@ for i = 1:6
 	fit_batch = vario(sprintf('fit_batches/batch_%i.mat', i), 'fit_batch');
 	samples = [samples, selectsamples(fit_batch, pos_cond, 97)];
 end
-%save('samples_diamor_1.mat', 'samples')
 
 mdp_data_arr = cell(1, length(samples));
 n_agents_arr = zeros(1, length(samples));
@@ -40,6 +39,9 @@ for i = 1:length(samples)
 		'v_des', v_des ...
 	);
 end
+
+S = struct('samples', {samples}, 'mdp_data_arr', {mdp_data_arr});
+vario('samples_data_diamor_1.mat', 'samples_data', S);
 
 histogram(n_agents_arr);
 title("Number of agents per sample")

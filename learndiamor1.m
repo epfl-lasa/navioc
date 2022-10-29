@@ -1,12 +1,10 @@
-%samples = getfield(load('samples_diamor_1.mat'), 'samples');
-
-%samples = samples(22:25);
-
-mdp_data_arr = definemdpdata(samples);
+samples_data = vario('samples_data_diamor_1.mat', 'samples_data');
+samples = samples_data.samples;
+mdp_data_arr = samples_data.mdp_data_arr;
 
 [features_pt, features_dyn] = definefeatures();
 
-addiocpaths();
+setiocpaths();
 
 irl_result = amerun(struct(), 'crowdworld', mdp_data_arr,...
     features_pt, features_dyn, samples, 4);
@@ -36,32 +34,16 @@ function test_params = definetestparams()
 	);
 end
 
-function mdp_data_arr = definemdpdata(samples)
-	mdp_data_arr = cell(1, length(samples));
 
-	for i = 1:length(samples)
-		n_agents = length(samples{i}.s)/6;
+function setiocpaths()
+	orig_state = warning;
+	warning('off','all');
+	rmpath Features
+	rmpath Crowdworld
+	warning(orig_state);
 
-		delta_x = samples{i}.states(end, 1:2:(2*n_agents)) - ...
-			samples{i}.states(1, 1:2:(2*n_agents));
-		v_des_x = samples{i}.v_des;
-		v_des_x(delta_x < 0) = -v_des_x(delta_x < 0);
-		v_des = reshape([v_des_x; zeros(1, n_agents)], [1, 2*n_agents]);
-
-		mdp_data_arr{i} = struct(...
-			'time_step', 0.05, ... [s]
-			'n_ped', n_agents, ...
-			'dims', 6*n_agents, ... positions, velocities, accelerations
-			'udims', 2*n_agents, ... jerks
-			'x_des', {{v_des, zeros(size(v_des))}}, ...
-			'v_des', v_des ...
-		);
-	end
-end
-
-function addiocpaths()
-	addpath Features
-	addpath Crowdworld
+	addpath Features2
+	addpath Crowdworld2
 	addpath cioc/General
 	addpath cioc/Reward
 	addpath cioc/FastHess
@@ -72,7 +54,7 @@ end
 
 function [features_pt, features_dyn] = definefeatures()
 	features_dyn = {... control-dependent features
-		struct('type', 'jerk2sum')
+		struct('type', 'acc2sum')
 	};
 	features_pt = {... state-dependent features
 		struct('type', 'iesum', 'a', 25) ...
@@ -83,6 +65,6 @@ function [features_pt, features_dyn] = definefeatures()
 		struct('type', 'dgaussiansum', 'sigma', 0.5) ...
 		struct('type', 'dgaussiansum', 'sigma', 1.5) ...
 		...struct('type', 'dactivsum', 'a', 30, 'R', 0.3) ...
-		struct('type', 'xerr2sum', 'order', 1) ...
+		struct('type', 'verr2sum') ...
 	};
 end

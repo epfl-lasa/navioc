@@ -6,7 +6,7 @@ T = size(u, 1);
 h = mdp_data.time_step;
 
 At = [...
-	eye(Du), 	eye(Du)*h, 	...
+	eye(Du), 	eye(Du)*h; 	...
 	zeros(Du), 	eye(Du) ...
 ];
 Bt = [...
@@ -34,7 +34,7 @@ if nargout >= 5
 		for d = 0:(T - j)
 			id = 1 + d;
 			jd = j + d;
-			dxdu((1 + (id - 1)*Du):(id*Du), (1 + (jd - 1)*Du*3):(jd*Du*3)) = product';
+			dxdu((1 + (id - 1)*Du):(id*Du), (1 + (jd - 1)*Du*2):(jd*Du*2)) = product';
 		end
 		product = At*product;
 	end
