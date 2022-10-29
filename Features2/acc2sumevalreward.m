@@ -5,14 +5,31 @@ Nt = size(u, 1);
 Nu = size(u, 2);
 Nx = size(states, 2);
 
-r = 0.5*sum(u.^2, 2);
+if reward.type_other
+    idx = mdp_data.idx_other;
+elseif reward.type_w
+    idx = mdp_data.idx_wheelchair;
+elseif reward.type_c
+    idx = mdp_data.idx_companion;
+else
+    idx = 1:(Nu/2);
+end
+
+n = 2*length(idx);
+jj = reshape([idx*2 - 1; idx*2], [1, n]);
+
+r = 0.5*sum(u(:, jj).^2, 2);
 if nargout >= 2
-    g = u;
+    g = zeros(Nt, Nu);
+    g(:, jj) = u(:, jj);
+    %g = u;
 end
 
 if nargout >= 3
-    drdu = u;
-    d2rdudu = repmat(reshape(eye(Nu), [1, Nu, Nu]), [Nt, 1, 1]);
+    drdu = g;
+    d2rdudu = zeros(Nt, Nu, Nu);
+    d2rdudu(:, jj, jj) = repmat(reshape(eye(n), [1, n, n]), [Nt, 1, 1]);
+    %repmat(reshape(eye(Nu), [1, Nu, Nu]), [Nt, 1, 1]);
 end
 
 if nargout >= 5

@@ -5,12 +5,25 @@ Nt = size(u, 1);
 Nu = size(u, 2);
 Nx = size(states, 2);
 
-idx = (1:Nu) + Nu;
-err = states(:, idx) - mdp_data.v_des;
+if reward.type_other
+    idx = mdp_data.idx_other;
+elseif reward.type_w
+    idx = mdp_data.idx_wheelchair;
+elseif reward.type_c
+    idx = mdp_data.idx_companion;
+else
+    idx = 1:(Nu/2);
+end
+
+n = 2*length(idx);
+jj = Nu + reshape([idx*2 - 1; idx*2], [1, n]);
+
+%idx = (1:Nu) + Nu;
+err = states(:, jj) - mdp_data.v_des(jj - Nu);
 r = 0.5*sum(err.^2, 2);
 if nargout >= 2
 	drdx = zeros(Nt, Nx);
-	drdx(:, idx) = err;
+	drdx(:, jj) = err;
 	g = permute(gradprod(A,B,permute(drdx,[1 3 2])),[1 3 2]);
 end
 if nargout >= 3
@@ -19,6 +32,6 @@ if nargout >= 3
 end
 if nargout >= 6
 	d2rdxdx = zeros(Nt, Nx, Nx);
-	d2rdxdx(:, idx, idx) = repmat(reshape(eye(Nu), [1, Nu, Nu]), [Nt, 1, 1]);
+	d2rdxdx(:, jj, jj) = repmat(reshape(eye(n), [1, n, n]), [Nt, 1, 1]);
     %disp(reward.type)
 end

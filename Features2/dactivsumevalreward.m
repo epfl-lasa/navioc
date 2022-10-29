@@ -22,6 +22,11 @@ end
 n_agents = Nu/2;
 for i = 1:n_agents
 	for j = (i + 1):n_agents
+		if ((reward.skip_other && mdp_data.other_pair(i, j)) || ...
+			(reward.skip_wp && mdp_data.wheelchair_pedestrian_pair(i, j)) || ...
+			(reward.skip_wc && mdp_data.wheelchair_companion_pair(i, j)))
+			continue
+		end
 		% assume that ix1 < ix2
 		ip1 = (i*2 - 1):(i*2);
 		ip2 = (j*2 - 1):(j*2);

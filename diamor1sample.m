@@ -32,12 +32,33 @@ for i = 1:length(samples)
 
 	v_des = reshape([v_des_x; zeros(1, n_agents)], [1, 2*n_agents]);
 
+	wheelchair_companion_pair = logical(zeros(n_agents));
+	wheelchair_pedestrian_pair = logical(zeros(n_agents));
+	other_pair = logical(zeros(n_agents));
+	for i_ = 1:n_agents
+		for j_ = (i_ + 1):n_agents
+			if ((samples{i}.type(i_) == 1 && samples{i}.type(j_) == 0) || ...
+				(samples{i}.type(i_) == 0 && samples{i}.type(j_) == 1))
+				wheelchair_pedestrian_pair(i_, j_) = true;
+			elseif ((samples{i}.type(i_) == 1 && samples{i}.type(j_) == 3) || ...
+					(samples{i}.type(i_) == 3 && samples{i}.type(j_) == 1))
+				wheelchair_companion_pair(i_, j_) = true;
+			else
+				other_pair(i_, j_) = true;
+			end
+		end
+	end
+
 	mdp_data_arr{i} = struct(...
 		'time_step', 0.05, ... [s]
 		'n_ped', n_agents, ...
 		'dims', 4*n_agents, ... positions, velocities
 		'udims', 2*n_agents, ... accelerations
-		'v_des', v_des ...
+		'v_des', v_des, ...
+		'wheelchair_companion_pair', wheelchair_companion_pair, ...
+		'wheelchair_pedestrian_pair', wheelchair_pedestrian_pair, ...
+		'other_pair', other_pair, ...
+		'type',  samples{i}.type ...
 	);
 end
 
