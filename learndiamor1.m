@@ -1,10 +1,12 @@
 exponent = -2;
 samples_data = vario(sprintf('samples_data/diamor_1_s1e%i.mat', exponent), 'samples_data');
 %samples_data = vario('samples_data_diamor_1.mat', 'samples_data');
-selection = [6:10, 13:15, 20, 22:29];
+selection = 1:length(samples_data.samples); %[6:10, 13:15, 20, 22:29];
 %selection = [1:5, 11:12, 16:19, 21, 30:34];
 samples = samples_data.samples(selection);
 mdp_data_arr = samples_data.mdp_data_arr(selection);
+
+nan_check_mdp_data(mdp_data_arr);
 
 [features_pt, features_dyn] = definefeatures();
 
@@ -81,4 +83,13 @@ function [features_pt, features_dyn] = definefeatures()
 		struct('type', 'verr2sum', 'type_c', false, 'type_w', false, 'type_other', true) ...
 		struct('type', 'verr2sum', 'type_c', true, 'type_w', false, 'type_other', false) ...
 	};
+end
+
+function nan_check_mdp_data(mdp_data_arr)
+for i = 1:length(mdp_data_arr)
+	if (any(isnan(mdp_data_arr{i}.vmag_des)) || ...
+		any(isnan(mdp_data_arr{i}.vx_des)) || ...
+		any(isnan(mdp_data_arr{i}.v_des)))
+		error('Found NaN in desired velocities/speeds.')
+	end
 end
