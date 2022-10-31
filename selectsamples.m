@@ -1,4 +1,4 @@
-function samples = selectsamples(fit_batch, position_condition, N_steps, y_1, y_2, dx_min, v_min)
+function samples = selectsamples(fit_batch, position_condition, N_steps, y_1, y_2, v_min)
 % if length(ij) == 2
 % 	s1 = sprintf('s_p00001/fit_batches_vdes/fit_batch_%i_%i.mat', ij(1), ij(2));	
 % else
@@ -6,7 +6,7 @@ function samples = selectsamples(fit_batch, position_condition, N_steps, y_1, y_
 % end
 % fit_batch = vario(s1, 'fit_batch');
 
-fit_batch = addvdestobatch(fit_batch, y_1, y_2, dx_min, v_min);
+fit_batch = addvdestobatch(fit_batch, y_1, y_2, v_min);
 
 h = 0.05;
 t_1 = fit_batch.window(1);

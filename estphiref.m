@@ -1,4 +1,6 @@
-function Phi_ref = estphiref(track_fit, y_1, y_2, dx)
+function Phi_ref = estphiref(track_fit, y_1, y_2)
+dy_max = 0.5*(y_2 - y_1);
+
 Phi_ref = zeros(length(track_fit.T_opt), 1);
 
 ind_corr = track_fit.X_opt(:, 2) > y_1 & track_fit.X_opt(:, 2) < y_2;
@@ -12,9 +14,13 @@ ii_segments = [find(start_ind), find(end_ind)];
 for j = 1:size(ii_segments, 1)
 	ii_seg = ii_segments(j, 1):ii_segments(j, 2);
 	Xx_seg = track_fit.X_opt(ii_seg, 1);
-	if (max(Xx_seg) - min(Xx_seg) > dx || ...
-		(ind_corr(1) && j == 1) || ...
-		(ind_corr(end) && j == size(ii_segments, 1)))
+	Xy_seg = track_fit.X_opt(ii_seg, 2);
+	dx = max(Xx_seg) - min(Xx_seg);
+	dy = max(Xy_seg) - min(Xy_seg);
+	if dx > dy
+		%(max(Xx_seg) - min(Xx_seg) > dx || ...
+		%(ind_corr(1) && j == 1 && dy < dy_max) || ...
+		%(ind_corr(end) && j == size(ii_segments, 1) && dy < dy_max))
 		% horizontal motion
 		Vx_seg = track_fit.V_opt(ii_seg, 1);
 		Phi_ref_seg = zeros(length(ii_seg), 1); % right

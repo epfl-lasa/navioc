@@ -11,9 +11,9 @@ pos_cond = @(X) any(...
 
 exponent = -2;
 samples = {};
-for i = 1:6
+for i = 7:11
 	fit_batch = vario(sprintf('fit_batches_s1e%i/batch_%i.mat', exponent, i), 'fit_batch');
-	samples = [samples, selectsamples(fit_batch, pos_cond, 97, -1, 7, 0.3)];
+	samples = [samples, selectsamples(fit_batch, pos_cond, 97, -2.5, 6, 0.3)];
 end
 
 mdp_data_arr = cell(1, length(samples));
@@ -67,13 +67,14 @@ title("Number of agents per sample")
 pause(1)
 
 addpath Visualization
-walls = vario('walls_diamor_1.mat', 'walls');
+walls = [];
 fprintf('\nSample    ')
 for i = 1:length(samples)
 	fprintf('\b\b\b')
 	fprintf('%3i', i)
 	fig = playsample(samples{i}, mdp_data_arr{i}, false, ...
 		[0, 60], [-10, 10], walls);
+	pause(1.0)
 	if isgraphics(fig)
 		close(fig);
 	else
