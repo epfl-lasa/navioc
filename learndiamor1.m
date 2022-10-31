@@ -93,3 +93,4 @@ for i = 1:length(mdp_data_arr)
 		error('Found NaN in desired velocities/speeds.')
 	end
 end
+end

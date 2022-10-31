@@ -1,4 +1,4 @@
-function speed_ref = estimspeedref(Vmag, speed_min, speed_max, n_bins)
+function speed_ref = estspeedref(Vmag, speed_min, speed_max, n_bins)
 
 %Vmag = sqrt(sum(V_opt.^2, 2));
 Vmag_motion = Vmag(Vmag >= speed_min);
