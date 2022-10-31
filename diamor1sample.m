@@ -1,7 +1,7 @@
-x_min = 25;
+x_min = 0;
 x_max = 60;
-y_min = 0;
-y_max = 6;
+y_min = -10;
+y_max = 10;
 
 pos_cond = @(X) any(...
 	X(:, 1:2:end) > x_min & ...
@@ -13,7 +13,7 @@ exponent = -2;
 samples = {};
 for i = 1:6
 	fit_batch = vario(sprintf('fit_batches_s1e%i/batch_%i.mat', exponent, i), 'fit_batch');
-	samples = [samples, selectsamples(fit_batch, pos_cond, 97)];
+	samples = [samples, selectsamples(fit_batch, pos_cond, 97, -1, 7, 12)];
 end
 
 mdp_data_arr = cell(1, length(samples));
@@ -30,7 +30,14 @@ for i = 1:length(samples)
 	v_des_x = samples{i}.vxabs_des;
 	v_des_x(delta_x < 0) = -v_des_x(delta_x < 0);
 
-	v_des = reshape([v_des_x; zeros(1, n_agents)], [1, 2*n_agents]);
+	%v_des = reshape([v_des_x; zeros(1, n_agents)], [1, 2*n_agents]);
+	Vx = samples{i}.states(:, (1:2:(2*n_agents)) + 2*n_agents);
+	Vy = samples{i}.states(:, (2:2:(2*n_agents)) + 2*n_agents);
+	Vmag = Vx.^2 + Vy.^2;
+	use_V_ref = mean(Vmag, 1) > 0.3;
+	V_ref_tmp = reshape(mean(samples{i}.V_ref, 1), [2, n_agents]);
+	V_ref_tmp(:, ~use_V_ref) = 0.0;
+	V_ref = reshape(V_ref_tmp, [1, 2*n_agents]);
 
 	wheelchair_companion_pair = logical(zeros(n_agents));
 	wheelchair_pedestrian_pair = logical(zeros(n_agents));
@@ -54,7 +61,7 @@ for i = 1:length(samples)
 		'n_ped', n_agents, ...
 		'dims', 4*n_agents, ... positions, velocities
 		'udims', 2*n_agents, ... accelerations
-		'v_des', v_des, ...
+		'v_des', V_ref, ...
 		'vx_des', v_des_x, ...
 		'vmag_des', samples{i}.vmag_des, ...
 		'wheelchair_companion_pair', wheelchair_companion_pair, ...
@@ -68,7 +75,7 @@ for i = 1:length(samples)
 end
 
 S = struct('samples', {samples}, 'mdp_data_arr', {mdp_data_arr});
-vario(sprintf('samples_data/diamor_1_s1e%i.mat', exponent), 'samples_data', S);
+%vario(sprintf('samples_data/diamor_1_s1e%i.mat', exponent), 'samples_data', S);
 
 histogram(n_agents_arr);
 title("Number of agents per sample")
@@ -81,7 +88,7 @@ for i = 1:length(samples)
 	fprintf('\b\b\b')
 	fprintf('%3i', i)
 	fig = playsample(samples{i}, mdp_data_arr{i}, false, ...
-		[x_min, x_max], [y_min - 0.25, y_max + 0.25], walls);
+		[0, 60], [-10, 10], walls);
 	if isgraphics(fig)
 		close(fig);
 	else

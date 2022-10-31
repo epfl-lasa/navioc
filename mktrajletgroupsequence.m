@@ -33,7 +33,8 @@ while true
 					'type', fit_batch.fits{i}.type, ...
 					...'v_des', fit_batch.fits{i}.v_des
 					'vmag_des', fit_batch.fits{i}.vmag_des, ...
-					'vxabs_des', fit_batch.fits{i}.vxabs_des);
+					'vxabs_des', fit_batch.fits{i}.vxabs_des, ...
+					'V_ref', fit_batch.fits{i}.V_ref(k_1:k_2, :));
 				group.trajlets = [group.trajlets, trajlet];
 			elseif k_2 >= 1 && k_1 <= length(fit_batch.fits{i}.fit.T_opt)
 				k_1_old = k_1;
@@ -47,7 +48,8 @@ while true
 					'k_off', k_1 - k_1_old, ...
 					...'v_des', fit_batch.fits{i}.v_des
 					'vmag_des', fit_batch.fits{i}.vmag_des, ...
-					'vxabs_des', fit_batch.fits{i}.vxabs_des);
+					'vxabs_des', fit_batch.fits{i}.vxabs_des, ...
+					'V_ref', fit_batch.fits{i}.V_ref(k_1:k_2, :));
 				group.fragments = [group.fragments, fragment];
 			end
 		end

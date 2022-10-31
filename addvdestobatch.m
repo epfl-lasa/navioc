@@ -1,4 +1,4 @@
-function fit_batch = addvdestobatch(fit_batch)%i, j)
+function fit_batch = addvdestobatch(fit_batch, y_1, y_2, dx_min)%i, j)
 
 % if nargin == 2
 % 	s1 = sprintf('s_p00001/fit_batches/fit_batch_%i_%i.mat', i, j);
@@ -18,6 +18,9 @@ for i = 1:length(fit_batch.fits)
 		vxabs_mode = findmode(VxAbs, [0.0, 2], 11);
 		fit_batch.fits{i}.vmag_des = vmag_mode;
 		fit_batch.fits{i}.vxabs_des = vxabs_mode;
+		Phi_ref = estimorientref(fit_batch.fits{i}.fit.X_opt, y_1, y_2, dx_min);
+		speed_ref = estimspeedref(Vmag, 0.3, 3, 16);
+		fit_batch.fits{i}.V_ref = [cos(Phi_ref), sin(Phi_ref)]*speed_ref;
 	end
 end
 

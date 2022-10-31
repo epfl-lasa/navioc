@@ -1,4 +1,4 @@
-function samples = selectsamples(fit_batch, position_condition, N_steps)
+function samples = selectsamples(fit_batch, position_condition, N_steps, y_1, y_2, dx_min)
 % if length(ij) == 2
 % 	s1 = sprintf('s_p00001/fit_batches_vdes/fit_batch_%i_%i.mat', ij(1), ij(2));	
 % else
@@ -6,7 +6,7 @@ function samples = selectsamples(fit_batch, position_condition, N_steps)
 % end
 % fit_batch = vario(s1, 'fit_batch');
 
-fit_batch = addvdestobatch(fit_batch);
+fit_batch = addvdestobatch(fit_batch, y_1, y_2, dx_min);
 
 h = 0.05;
 t_1 = fit_batch.window(1);
@@ -25,15 +25,17 @@ for i = 1:length(seq)
 	type_def = agg.type(jj);
 	vmag_des_def = agg.vmag_des(jj);
 	vxabs_des_def = agg.vxabs_des(jj);
+	V_ref_def = agg.V_ref(:, jj2);
 	% keep only those trajlets satisfying the position condition
 	jj_ = position_condition(Xdef);
 	jj2_ = repelem(jj_, 2);
-	if ~isempty(jj_)
+	if any(jj_)
 		states = [Xdef(:, jj2_), Vdef(:, jj2_)];
 		samples = [samples, struct(...
 			's', states(1, :), ...
 			'states', states(2:end, :), ...
 			'u', Udef(2:end, jj2_), ...
+			'V_ref', V_ref_def(:, jj2_), ...
 			'vmag_des', vmag_des_def(jj_), ...
 			'vxabs_des', vxabs_des_def(jj_), ...
 			'type', type_def(jj_) ...

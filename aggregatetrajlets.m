@@ -11,6 +11,7 @@ agg = struct(...
 	'type', zeros(1, n), ...
 	'vmag_des', zeros(1, n), ... 
 	'vxabs_des', zeros(1, n), ...
+	'V_ref', zeros(T, N), ...
 	'n', n, ...
 	'n_traj', n_traj, ...
 	'n_frag', n_frag);
@@ -30,6 +31,7 @@ for i = 1:n_traj
 	%agg.v_des(i) = group.trajlets{i}.v_des;
 	agg.vmag_des(i) = group.trajlets{i}.vmag_des;
 	agg.vxabs_des(i) = group.trajlets{i}.vxabs_des;
+	agg.V_ref(:, jj) = group.trajlets{i}.V_ref;
 end
 for i = 1:n_frag
 	j = n_traj + i;
@@ -49,5 +51,6 @@ for i = 1:n_frag
 	end
 	%agg.v_des(j) = group.fragments{i}.v_des;
 	agg.vmag_des(j) = group.fragments{i}.vmag_des; 
-	agg.vxabs_des(j) = group.fragments{i}.vxabs_des; 
+	agg.vxabs_des(j) = group.fragments{i}.vxabs_des;
+	agg.V_ref(kk, jj) = group.fragments{i}.V_ref; 
 end
