@@ -13,7 +13,7 @@ exponent = -2;
 samples = {};
 for i = 1:6
 	fit_batch = vario(sprintf('fit_batches_s1e%i/batch_%i.mat', exponent, i), 'fit_batch');
-	samples = [samples, selectsamples(fit_batch, pos_cond, 97, -1, 7, 12)];
+	samples = [samples, selectsamples(fit_batch, pos_cond, 97, -1, 7, 12, 0.3)];
 end
 
 mdp_data_arr = cell(1, length(samples));
@@ -24,13 +24,7 @@ for i = 1:length(samples)
 	n_agents = length(samples{i}.s)/4;
 	n_agents_arr(i) = n_agents;
 
-	Vx = samples{i}.states(:, (1:2:(2*n_agents)) + 2*n_agents);
-	Vy = samples{i}.states(:, (2:2:(2*n_agents)) + 2*n_agents);
-	Vmag = Vx.^2 + Vy.^2;
-	use_V_ref = mean(Vmag, 1) > 0.3;
-	V_ref_tmp = reshape(mean(samples{i}.V_ref, 1), [2, n_agents]);
-	V_ref_tmp(:, ~use_V_ref) = 0.0;
-	V_ref = reshape(V_ref_tmp, [1, 2*n_agents]);
+	V_ref = mean(samples{i}.V_ref, 1);
 
 	wheelchair_companion_pair = logical(zeros(n_agents));
 	wheelchair_pedestrian_pair = logical(zeros(n_agents));
