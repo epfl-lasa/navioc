@@ -2,9 +2,11 @@ function fig = playsample(sample, mdp_data, no_video, x_limits, y_limits, walls)
 %pause(0.01) % switch to newest figure
 fig = figure('Position', [300, 600, 2000, 600]);
 ax = axes(fig);
-pause(0.1)
 if nargin < 3
 	no_video = false;
+end
+if ~no_video
+	pause(0.1)
 end
 n = mdp_data.n_ped;
 if n > 7
@@ -67,7 +69,9 @@ for i = 1:size(Px, 1)
 		end
 	end
 end
-pause(0.05)
+if ~no_video
+	pause(0.05)
+end
 
 function h = plotcircle(ax, x, y, r, c1, c2)
 if nargin == 5
