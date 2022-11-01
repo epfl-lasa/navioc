@@ -60,7 +60,7 @@ for i = 1:length(samples)
 end
 
 S = struct('samples', {samples}, 'mdp_data_arr', {mdp_data_arr});
-%vario(sprintf('samples_data/diamor_1_s1e%i.mat', exponent), 'samples_data', S);
+vario(sprintf('samples_data/diamor_2_s1e%i.mat', exponent), 'samples_data', S);
 
 histogram(n_agents_arr);
 title("Number of agents per sample")

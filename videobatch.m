@@ -9,7 +9,7 @@ end
 if nargin == 2
 	s1 = sprintf('s_p00001/fit_batches/fit_batch_%i_%i.mat', i, j);	
 else
-	s1 = sprintf('fit_batches/batch_%i.mat', i);
+	s1 = sprintf('fit_batches_s1e-2/batch_%i.mat', i);
 end
 fit_batch = vario(s1, 'fit_batch');
 

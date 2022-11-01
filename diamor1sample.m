@@ -1,7 +1,7 @@
-x_min = 0;
+x_min = 25;
 x_max = 60;
-y_min = -10;
-y_max = 10;
+y_min = -1;
+y_max = 7;
 
 pos_cond = @(X) any(...
 	X(:, 1:2:end) > x_min & ...
@@ -60,7 +60,7 @@ for i = 1:length(samples)
 end
 
 S = struct('samples', {samples}, 'mdp_data_arr', {mdp_data_arr});
-%vario(sprintf('samples_data/diamor_1_s1e%i.mat', exponent), 'samples_data', S);
+vario(sprintf('samples_data/diamor_1_corr_s1e%i.mat', exponent), 'samples_data', S);
 
 histogram(n_agents_arr);
 title("Number of agents per sample")

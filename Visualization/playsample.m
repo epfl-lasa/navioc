@@ -44,7 +44,13 @@ for i = 1:size(Px, 1)
 	end	
 	tmp_handles = [];
 	for j = 1:n
-		h = plotcircle(ax, X(j), Y(j), 0.2, C(j, :));
+		if mdp_data.type(j) == 1
+			h = plotcircle(ax, X(j), Y(j), 0.2, C(j, :), 'k');
+		elseif mdp_data.type(j) == 3
+			h = plotcircle(ax, X(j), Y(j), 0.2, C(j, :), 'r');
+		else
+			h = plotcircle(ax, X(j), Y(j), 0.2, C(j, :));
+		end
 		tmp_handles = [tmp_handles, h];
 	end
 	UV = reshape(mdp_data.v_des, [2, n])';
@@ -63,9 +69,12 @@ for i = 1:size(Px, 1)
 end
 pause(0.05)
 
-function h = plotcircle(ax, x, y, r, c)
+function h = plotcircle(ax, x, y, r, c1, c2)
+if nargin == 5
+	c2 = c1;
+end
 h = rectangle(ax, 'Position', [x - r, y - r, 2*r, 2*r], ...
-	'Curvature',[1, 1], 'FaceColor', c, 'EdgeColor', c);
+	'Curvature',[1, 1], 'FaceColor', c1, 'EdgeColor', c2);
 
 function C = colororder
 C = [
