@@ -3,36 +3,36 @@ function showfitbatch(fit_batch)
 subplot(2, 1, 1)
 hold on
 for i = 1:length(fit_batch.fits)
-	if ~fit_batch.fits{i}.empty && fit_batch.fits{i}.type == "ped"
+	if ~fit_batch.fits{i}.empty %&& fit_batch.fits{i}.type == "ped"
 		plot(fit_batch.fits{i}.X(:, 1), fit_batch.fits{i}.X(:, 2), "k")
 	elseif ~fit_batch.fits{i}.empty
 		plot(fit_batch.fits{i}.X(:, 1), fit_batch.fits{i}.X(:, 2), "g")
 	end
 end
-for i = 1:length(fit_batch.fits)
-	if ~fit_batch.fits{i}.empty && (...
-		fit_batch.fits{i}.type == "powered_wheelchair" || ...
-		fit_batch.fits{i}.type == "manual_wheelchair")
-		plot(fit_batch.fits{i}.X(:, 1), fit_batch.fits{i}.X(:, 2), "r")
-	end
-end
+% for i = 1:length(fit_batch.fits)
+% 	if ~fit_batch.fits{i}.empty && (...
+% 		fit_batch.fits{i}.type == "powered_wheelchair" || ...
+% 		fit_batch.fits{i}.type == "manual_wheelchair")
+% 		plot(fit_batch.fits{i}.X(:, 1), fit_batch.fits{i}.X(:, 2), "r")
+% 	end
+% end
 daspect([1, 1, 1])
 subplot(2, 1, 2)
 hold on
 for i = 1:length(fit_batch.fits)
-	if ~fit_batch.fits{i}.empty && fit_batch.fits{i}.type == "ped"
+	if ~fit_batch.fits{i}.empty% && fit_batch.fits{i}.type == "ped"
 		plot(fit_batch.fits{i}.fit.X_opt(:, 1), fit_batch.fits{i}.fit.X_opt(:, 2), "k")
 	elseif ~fit_batch.fits{i}.empty
 		plot(fit_batch.fits{i}.fit.X_opt(:, 1), fit_batch.fits{i}.fit.X_opt(:, 2), "g")
 	end
 end
-for i = 1:length(fit_batch.fits)
-	if ~fit_batch.fits{i}.empty && (...
-		fit_batch.fits{i}.type == "powered_wheelchair" || ...
-		fit_batch.fits{i}.type == "manual_wheelchair")
-		plot(fit_batch.fits{i}.fit.X_opt(:, 1), fit_batch.fits{i}.fit.X_opt(:, 2), "r")
-	end
-end
+% for i = 1:length(fit_batch.fits)
+% 	if ~fit_batch.fits{i}.empty && (...
+% 		fit_batch.fits{i}.type == "powered_wheelchair" || ...
+% 		fit_batch.fits{i}.type == "manual_wheelchair")
+% 		plot(fit_batch.fits{i}.fit.X_opt(:, 1), fit_batch.fits{i}.fit.X_opt(:, 2), "r")
+% 	end
+% end
 daspect([1, 1, 1])
 
 % for i = 1:length(fit_batch.fits)
