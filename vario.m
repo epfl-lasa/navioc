@@ -14,5 +14,5 @@ end
 function root = getroot()
 root = '/media/gonond/LaCieG/data-navioc/';
 if ~exist(root, 'dir')
-	root = '/home/david/data-navioc/';
+	root = '/media/david/LaCieG/data-navioc/';
 end
