@@ -1,6 +1,6 @@
 function showfitbatch(fit_batch)
 
-subplot(2, 1, 1)
+subplot(1, 2, 1)
 hold on
 for i = 1:length(fit_batch.fits)
 	if ~fit_batch.fits{i}.empty %&& fit_batch.fits{i}.type == "ped"
@@ -17,7 +17,7 @@ end
 % 	end
 % end
 daspect([1, 1, 1])
-subplot(2, 1, 2)
+subplot(1, 2, 2)
 hold on
 for i = 1:length(fit_batch.fits)
 	if ~fit_batch.fits{i}.empty% && fit_batch.fits{i}.type == "ped"
