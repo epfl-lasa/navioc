@@ -93,7 +93,7 @@ for i = 1:N_steps:(Nt - N_steps)
 		n_ag = length(jj_ag);
 		if n_ag > 0
 			jj_p = reshape([jj_ag*2 - 1; jj_ag*2], [1, 2*n_ag]);
-			jj_v = 2*n_ag + jj_p;
+			jj_v = 2*Na + jj_p;
 			X_trajl = X(i:(i + N_steps), [jj_p, jj_v]);
 			trajlets = [trajlets, struct(...
 				's', X_trajl(1, :), ...

@@ -18,6 +18,8 @@ C = C(1:n, :);
 states = [sample.s; sample.states];
 Px = states(:, 1:2:mdp_data.udims);
 Py = states(:, 2:2:mdp_data.udims);
+Vx = states(:, mdp_data.udims + (1:2:mdp_data.udims));
+Vy = states(:, mdp_data.udims + (2:2:mdp_data.udims));
 if nargin < 5
 	x_limits = [min_(Px) - 0.2, max_(Px) + 0.2];
 	y_limits = [min_(Py) - 0.2, max_(Py) + 0.2];
@@ -33,6 +35,8 @@ tmp_handles = [];
 for i = 1:size(Px, 1)
 	X = Px(i, :)';
 	Y = Py(i, :)';
+	U = Vx(i, :)';
+	V = Vy(i, :)';
 	
 	%scatter(X, Y, 20, C)
 	delete(tmp_handles)
@@ -58,6 +62,9 @@ for i = 1:size(Px, 1)
 	UV = reshape(mdp_data.v_des, [2, n])';
 	h = quiver(ax, X, Y, UV(:, 1), UV(:, 2), 0, 'Color', 'k');
 	tmp_handles = [tmp_handles, h];
+
+	h = quiver(ax, X, Y, U, V, 0, 'Color', 'r');
+	tmp_handles = [tmp_handles, h];
 	
 	xlim(ax, x_limits)
 	ylim(ax, y_limits)
@@ -66,6 +73,13 @@ for i = 1:size(Px, 1)
 		pause(0.05)
 		if isobject(fig) & ~isgraphics(fig)
 			break
+		end
+	end
+	if ~no_video
+		if isfield(mdp_data, 'sampling_time')
+			pause(mdp_data.sampling_time)
+		else
+			pause(0.05)
 		end
 	end
 end
