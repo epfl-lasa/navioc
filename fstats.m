@@ -1,4 +1,8 @@
-function fstats(features, samples_data)
+function F = fstats(features, samples_data, plot_hist)
+
+if nargin < 3
+	plot_hist = false;
+end
 
 orig_state = warning;
 warning('off','all');
@@ -23,15 +27,21 @@ for k = 1:length(infos)
 	F(:, :, k) = infos{k}.f;
 end
 
-for j = 1:length(features)
-	figure
-	hold on
-	histogram(F(:, j, :))
-	xline(mean(mean(F(:, j, :))), "k", 'Mean')
-	xline(median(median(F(:, j, :))), "k--", 'Median')
-	title(features{j}.type)
-	legend()
+if plot_hist
+	for j = 1:length(features)
+		figure
+		hold on
+		histogram(flat(F(:, j, :)), 'HandleVisibility', 'off')
+		xline(mean(flat(F(:, j, :))), "k", 'Mean')
+		xline(median(flat(F(:, j, :))), "k--", 'Median')
+		title(features{j}.type)
+		legend()
+	end
 end
+
 
 function xline(x, linespec, label)
 plot([x, x], getfield(gca(), 'YLim'), linespec, 'DisplayName', label)
+
+function y = flat(X)
+y = reshape(X, [numel(X), 1]);
