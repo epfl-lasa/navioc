@@ -18,17 +18,17 @@ end
 n = 2*length(idx);
 jj = reshape([idx*2 - 1; idx*2], [1, n]);
 
-r = 0.5*sum(u(:, jj).^2, 2);
+r = 0.5*sum(u(:, jj).^2, 2)/mdp_data.n_ped;
 if nargout >= 2
     g = zeros(Nt, Nu);
-    g(:, jj) = u(:, jj);
+    g(:, jj) = u(:, jj)/mdp_data.n_ped;
     %g = u;
 end
 
 if nargout >= 3
     drdu = g;
     d2rdudu = zeros(Nt, Nu, Nu);
-    d2rdudu(:, jj, jj) = repmat(reshape(eye(n), [1, n, n]), [Nt, 1, 1]);
+    d2rdudu(:, jj, jj) = repmat(reshape(eye(n), [1, n, n]), [Nt, 1, 1])/mdp_data.n_ped;
     %repmat(reshape(eye(Nu), [1, Nu, Nu]), [Nt, 1, 1]);
 end
 

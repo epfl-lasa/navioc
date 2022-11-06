@@ -129,7 +129,7 @@ for i = 1:n_agents
 	end
 end
 
-normalizer = 1; % n_agents*(n_agents - 1)/2;
+normalizer = n_agents; % n_agents*(n_agents - 1)/2;
 r = r/normalizer;
 if nargout >= 2
 	drdx = drdx/normalizer;

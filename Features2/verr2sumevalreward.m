@@ -20,10 +20,10 @@ jj = Nu + reshape([idx*2 - 1; idx*2], [1, n]);
 
 %idx = (1:Nu) + Nu;
 err = states(:, jj) - mdp_data.v_des(jj - Nu);
-r = 0.5*sum(err.^2, 2);
+r = 0.5*sum(err.^2, 2)/mdp_data.n_ped;
 if nargout >= 2
 	drdx = zeros(Nt, Nx);
-	drdx(:, jj) = err;
+	drdx(:, jj) = err/mdp_data.n_ped;
 	g = permute(gradprod(A,B,permute(drdx,[1 3 2])),[1 3 2]);
 end
 if nargout >= 3
@@ -32,6 +32,6 @@ if nargout >= 3
 end
 if nargout >= 6
 	d2rdxdx = zeros(Nt, Nx, Nx);
-	d2rdxdx(:, jj, jj) = repmat(reshape(eye(n), [1, n, n]), [Nt, 1, 1]);
+	d2rdxdx(:, jj, jj) = repmat(reshape(eye(n), [1, n, n]), [Nt, 1, 1])/mdp_data.n_ped;
     %disp(reward.type)
 end

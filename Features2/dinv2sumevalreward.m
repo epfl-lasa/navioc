@@ -58,6 +58,13 @@ for i = 1:n_agents
 	end
 end
 
+normalizer = n_agents; % n_agents*(n_agents - 1)/2;
+r = r/normalizer;
 if nargout >= 2
+	drdx = drdx/normalizer;
 	g = permute(gradprod(A,B,permute(drdx,[1 3 2])),[1 3 2]);
+end
+if nargout >= 6
+	d2rdxdx = d2rdxdx/normalizer;
+    %disp(reward.type)
 end
