@@ -1,6 +1,8 @@
 function [r, g, drdu, d2rdudu, drdx, d2rdxdx, gfull, Hfull] = ...
 	verr2sumevalreward(reward, mdp_data, x, u, states, A, B, dxdu, d2xdudu)
 
+normalizer = mdp_data.n_ped*reward.expec;
+
 Nt = size(u, 1);
 Nu = size(u, 2);
 Nx = size(states, 2);
@@ -20,10 +22,10 @@ jj = Nu + reshape([idx*2 - 1; idx*2], [1, n]);
 
 %idx = (1:Nu) + Nu;
 err = states(:, jj) - mdp_data.v_des(jj - Nu);
-r = 0.5*sum(err.^2, 2)/mdp_data.n_ped;
+r = 0.5*sum(err.^2, 2)/normalizer;
 if nargout >= 2
 	drdx = zeros(Nt, Nx);
-	drdx(:, jj) = err/mdp_data.n_ped;
+	drdx(:, jj) = err/normalizer;
 	g = permute(gradprod(A,B,permute(drdx,[1 3 2])),[1 3 2]);
 end
 if nargout >= 3
@@ -32,6 +34,6 @@ if nargout >= 3
 end
 if nargout >= 6
 	d2rdxdx = zeros(Nt, Nx, Nx);
-	d2rdxdx(:, jj, jj) = repmat(reshape(eye(n), [1, n, n]), [Nt, 1, 1])/mdp_data.n_ped;
+	d2rdxdx(:, jj, jj) = repmat(reshape(eye(n), [1, n, n]), [Nt, 1, 1])/normalizer;
     %disp(reward.type)
 end

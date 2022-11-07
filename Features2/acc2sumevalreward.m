@@ -1,6 +1,8 @@
 function [r,g,drdu,d2rdudu,drdx,d2rdxdx,gfull,Hfull] = ...
     acc2sumevalreward(reward, mdp_data, x, u, states, A, B, dxdu, d2xdudu)
 
+normalizer = mdp_data.n_ped*reward.expec;
+
 Nt = size(u, 1);
 Nu = size(u, 2);
 Nx = size(states, 2);
@@ -18,17 +20,17 @@ end
 n = 2*length(idx);
 jj = reshape([idx*2 - 1; idx*2], [1, n]);
 
-r = 0.5*sum(u(:, jj).^2, 2)/mdp_data.n_ped;
+r = 0.5*sum(u(:, jj).^2, 2)/normalizer;
 if nargout >= 2
     g = zeros(Nt, Nu);
-    g(:, jj) = u(:, jj)/mdp_data.n_ped;
+    g(:, jj) = u(:, jj)/normalizer;
     %g = u;
 end
 
 if nargout >= 3
     drdu = g;
     d2rdudu = zeros(Nt, Nu, Nu);
-    d2rdudu(:, jj, jj) = repmat(reshape(eye(n), [1, n, n]), [Nt, 1, 1])/mdp_data.n_ped;
+    d2rdudu(:, jj, jj) = repmat(reshape(eye(n), [1, n, n]), [Nt, 1, 1])/normalizer;
     %repmat(reshape(eye(Nu), [1, Nu, Nu]), [Nt, 1, 1]);
 end
 
