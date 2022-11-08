@@ -21,16 +21,18 @@ for i = 1:length(trajlets)
 	trajlets{i}.u = zeros(96, 2*n_agents);
 end
 
-res_learn = vario('res_no_ie.mat', 'res');
+%res_learn = vario('res_no_ie.mat', 'res');
+res_learn = vario('res_sel_ie.mat', 'res');
 reward = res_learn{2}.irl_result.reward;
 for i = 1:length(reward.features)
     reward.features{i}.expec = 1;
 end
 
 
+
 setiocpaths();
 
-re_samples_no_ie = resampleall(trajlets, mdp_data_arr, reward, definetestparams());
+re_samples = resampleall(trajlets, mdp_data_arr, reward, definetestparams());
 
 
 

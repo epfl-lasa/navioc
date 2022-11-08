@@ -4,7 +4,7 @@ function [r, g, drdu, d2rdudu, drdx, d2rdxdx, gfull, Hfull] = iesumevalreward(re
 R = reward.R;
 R2 = R^2;
 eps1 = 0.22*R2;
-eps2 = 0.01;
+eps2 = reward.eps2; %0.01;
 s = reward.a;
 
 % dimensions
@@ -49,6 +49,9 @@ for i = 1:n_agents
 
 		Pmag = sqrt(P2);
 		Vmag = sqrt(V2);
+
+		% Hack!
+		Vmag(Vmag < 1e-10) = 1e-10; % avoids division by zero later on
 
 		Mu = -sum(P.*V, 2);
 		Rho = Pmag/R - 1.0;
@@ -139,3 +142,13 @@ if nargout >= 6
 	d2rdxdx = d2rdxdx/normalizer;
     %disp(reward.type)
 end
+
+% function checkvalues(X)
+% if sum(any(isnan(X)))
+% 	disp('NaN')
+% 	disp(X(isnan(X)))
+% end
+% if sum(any(isinf(X)))
+% 	disp('Inf')
+% 	disp(X(isinf(X)))
+% end
