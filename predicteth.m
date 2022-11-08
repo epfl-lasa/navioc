@@ -23,6 +23,10 @@ end
 
 res_learn = vario('res_no_ie.mat', 'res');
 reward = res_learn{2}.irl_result.reward;
+for i = 1:length(reward.features)
+    reward.features{i}.expec = 1;
+end
+
 
 setiocpaths();
 
