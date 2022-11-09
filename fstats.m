@@ -1,7 +1,11 @@
-function F = fstats(features, samples_data, plot_hist)
+function F = fstats(features, samples_data, plot_hist, title_prefix)
 
 if nargin < 3
 	plot_hist = false;
+end
+
+if nargin < 4
+	title_prefix = '';
 end
 
 orig_state = warning;
@@ -34,7 +38,7 @@ if plot_hist
 		histogram(flat(F(:, j, :)), 'HandleVisibility', 'off')
 		xline(mean(flat(F(:, j, :))), "k", 'Mean')
 		xline(median(flat(F(:, j, :))), "k--", 'Median')
-		title(features{j}.type)
+		title(strcat(title_prefix, ' ', features{j}.type))
 		legend()
 	end
 end
