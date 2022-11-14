@@ -1,9 +1,11 @@
 function [r, g, drdu, d2rdudu, drdx, d2rdxdx, gfull, Hfull] = ...
 	dgaussiansumevalreward(reward, mdp_data, x, u, states, A, B, dxdu, d2xdudu)
 
-Nt = size(u, 1);
-Nu = size(u, 2);
-Nx = size(states, 2);
+fast = isfield(reward, 'fast') && reward.fast;
+
+Nt = size(states, 1);
+Nu = mdp_data.udims;
+Nx = mdp_data.dims;
 
 % initialize sums to zero
 r = zeros(Nt, 1);
@@ -11,8 +13,13 @@ if nargout >= 2
 	drdx = zeros(Nt, Nx);
 end
 if nargout >= 3
-	drdu = zeros(Nt, Nu);
-	d2rdudu = zeros(Nt, Nu, Nu);
+	if fast
+		drdu = 0;
+		d2rdudu = 0;
+	else
+		drdu = zeros(Nt, Nu);
+		d2rdudu = zeros(Nt, Nu, Nu);
+	end
 end
 if nargout >= 6
 	d2rdxdx = zeros(Nt, Nx, Nx);
@@ -62,7 +69,11 @@ normalizer = n_agents*reward.expec; % n_agents*(n_agents - 1)/2;
 r = r/normalizer;
 if nargout >= 2
 	drdx = drdx/normalizer;
-	g = permute(gradprod(A,B,permute(drdx,[1 3 2])),[1 3 2]);
+	if fast
+		g = 0;
+	else
+		g = permute(gradprod(A,B,permute(drdx,[1 3 2])),[1 3 2]);
+	end
 end
 if nargout >= 6
 	d2rdxdx = d2rdxdx/normalizer;

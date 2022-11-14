@@ -1,11 +1,13 @@
 function [r, g, drdu, d2rdudu, drdx, d2rdxdx, gfull, Hfull] = ...
 	verr2sumevalreward(reward, mdp_data, x, u, states, A, B, dxdu, d2xdudu)
 
+fast = isfield(reward, 'fast') && reward.fast;
+
 normalizer = mdp_data.n_ped*reward.expec;
 
-Nt = size(u, 1);
-Nu = size(u, 2);
-Nx = size(states, 2);
+Nt = size(states, 1);
+Nu = mdp_data.udims;
+Nx = mdp_data.dims;
 
 if reward.type_other
     idx = mdp_data.idx_other;
@@ -26,11 +28,20 @@ r = 0.5*sum(err.^2, 2)/normalizer;
 if nargout >= 2
 	drdx = zeros(Nt, Nx);
 	drdx(:, jj) = err/normalizer;
-	g = permute(gradprod(A,B,permute(drdx,[1 3 2])),[1 3 2]);
+	if fast
+		g = 0;
+	else
+		g = permute(gradprod(A,B,permute(drdx,[1 3 2])),[1 3 2]);
+	end
 end
 if nargout >= 3
-	drdu = zeros(Nt, Nu);
-	d2rdudu = zeros(Nt, Nu, Nu);
+	if fast
+		drdu = 0;
+		d2rdudu = 0;
+	else
+		drdu = zeros(Nt, Nu);
+		d2rdudu = zeros(Nt, Nu, Nu);
+	end
 end
 if nargout >= 6
 	d2rdxdx = zeros(Nt, Nx, Nx);

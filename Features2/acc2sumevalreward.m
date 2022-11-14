@@ -4,8 +4,8 @@ function [r,g,drdu,d2rdudu,drdx,d2rdxdx,gfull,Hfull] = ...
 normalizer = mdp_data.n_ped*reward.expec;
 
 Nt = size(u, 1);
-Nu = size(u, 2);
-Nx = size(states, 2);
+Nu = mdp_data.udims;
+Nx = mdp_data.dims;
 
 if reward.type_other
     idx = mdp_data.idx_other;
