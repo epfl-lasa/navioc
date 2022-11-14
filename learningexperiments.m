@@ -146,31 +146,57 @@ re_samples_data_eth = struct(...
 	'mdp_data_arr', {mdp_data_arr_eth});
 features = [features_dyn, features_pt];
 if ~exist('F_train', 'var')
-	F_train_orig = fstats(features, samples_data_train, true, 'train orig -');
-	F_test_orig = fstats(features, samples_data_test, true, 'test orig -');
-	F_train = fstats(features, re_samples_data_train, true, 'train re -');
-	F_test = fstats(features, re_samples_data_test, true, 'test re -');
+	F_train_orig = fstats(features, samples_data_train);%, true, 'train orig -');
+	F_test_orig = fstats(features, samples_data_test);%, true, 'test orig -');
+	F_train = fstats(features, re_samples_data_train);%, true, 'train re -');
+	F_test = fstats(features, re_samples_data_test);%, true, 'test re -');
 
-	F_eth_orig = fstats(features, samples_data_eth, true, 'eth orig -');
-	F_eth = fstats(features, re_samples_data_eth, true, 'eth re -');
+	F_eth_orig = fstats(features, samples_data_eth);%, true, 'eth orig -');
+	F_eth = fstats(features, re_samples_data_eth);%, true, 'eth re -');
 
-	sigma_u = 0.5;
-	rand_samples_data_train = resamplerand(samples_data_train, 10, sigma_u);
-	rand_samples_data_test = resamplerand(samples_data_test, 10, sigma_u);
-	F_train_rand = fstats(features, rand_samples_data_train, true, 'train rand -');
-	F_test_rand = fstats(features, rand_samples_data_test, true, 'test rand -');
-
-	f_tilde_train_rand = mean13(F_train_rand, [1, 3]);
-	f_tilde_test_rand = mean13(F_test_rand, [1, 3]);
-	f_tilde_rand = mean13(cat(3, F_train_rand, F_test_rand), [1, 3]);
-	
-	f_tilde_train = mean13(F_train, [1, 3]);
-	f_tilde_test = mean13(F_test, [1, 3]);
-	f_tilde = mean13(cat(3, F_train, F_test), [1, 3]);
-
-	f_tilde_train_orig = mean13(F_train_orig, [1, 3]);
-	f_tilde_test_orig = mean13(F_test_orig, [1, 3]);
-	f_tilde_orig = mean13(cat(3, F_train_orig, F_test_orig), [1, 3]);
+	bounds = [0.07, 0.04, 0.3, 0.02];
+	for j = 1:4
+		subplot(4, 4, j)
+		plotfstats(F_train_orig(:, j, :), strcat('Set 1-', features{j}.type), bounds(j), false)
+	end
+	for j = 1:4
+		subplot(4, 4, j+4)
+		plotfstats(F_train(:, j, :), strcat('Set 1 resampled-', features{j}.type), bounds(j), false)
+	end
+	for j = 1:4
+		subplot(4, 4, j+8)
+		plotfstats(F_test_orig(:, j, :), strcat('Set 2-', features{j}.type), bounds(j), false)
+	end
+	for j = 1:4
+		subplot(4, 4, j+12)
+		plotfstats(F_test(:, j, :), strcat('Set 2-resampled ', features{j}.type), bounds(j), false)
+    end
+    
+% 	for j = 1:4
+% 		subplot(6, 4, j+16)
+% 		plotfstats(F_eth_orig(:, j, :), strcat('ETH-', features{j}.type), bounds(j), false)
+% 	end
+% 	for j = 1:4
+% 		subplot(6, 4, j+20)
+% 		plotfstats(F_eth(:, j, :), strcat('ETH resampled-', features{j}.type), bounds(j), false)
+% 	end
+% 	sigma_u = 0.5;
+% 	rand_samples_data_train = resamplerand(samples_data_train, 10, sigma_u);
+% 	rand_samples_data_test = resamplerand(samples_data_test, 10, sigma_u);
+% 	F_train_rand = fstats(features, rand_samples_data_train, true, 'train rand -');
+% 	F_test_rand = fstats(features, rand_samples_data_test, true, 'test rand -');
+% 
+% 	f_tilde_train_rand = mean13(F_train_rand, [1, 3]);
+% 	f_tilde_test_rand = mean13(F_test_rand, [1, 3]);
+% 	f_tilde_rand = mean13(cat(3, F_train_rand, F_test_rand), [1, 3]);
+% 	
+% 	f_tilde_train = mean13(F_train, [1, 3]);
+% 	f_tilde_test = mean13(F_test, [1, 3]);
+% 	f_tilde = mean13(cat(3, F_train, F_test), [1, 3]);
+% 
+% 	f_tilde_train_orig = mean13(F_train_orig, [1, 3]);
+% 	f_tilde_test_orig = mean13(F_test_orig, [1, 3]);
+% 	f_tilde_orig = mean13(cat(3, F_train_orig, F_test_orig), [1, 3]);
 
 	f_80_orig = prctile(reshape(permute(cat(3, F_train_orig, F_test_orig), [2, 1, 3]), ...
 		[length(features), 96*(length(selection_train) + length(selection_test))]), 80, 2);
@@ -266,4 +292,28 @@ end
 
 function M = mean13(X, dummy)
 	M = mean(mean(X, 1), 3);
+end
+
+function plotfstats(Fj, name, bound, legend_on)
+    X = flat(Fj);
+    Y = X(X < bound);
+	hold on
+	histogram(Y, 'HandleVisibility', 'off')
+	xline(mean(X), "k", 'Mean')
+	xline(median(X), "k--", 'Median')
+	title(name)
+	if legend_on
+		legend()
+	end
+	if ~isinf(bound)
+		xlim([0 bound])
+	end
+end
+
+
+function xline(x, linespec, label)
+    plot([x, x], getfield(gca(), 'YLim'), linespec, 'DisplayName', label)
+end
+function y = flat(X)
+    y = reshape(X, [numel(X), 1]);
 end
