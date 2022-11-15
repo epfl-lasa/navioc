@@ -73,9 +73,9 @@ states = feval('crowdworldcontrol', mdp_data, sample.s, u);
 %disp(max(max(abs(re_samples{1}.u - u))))
 %disp(max(max(abs(re_samples{1}.states - states))))
 
-Px = states(:, 1);
-Py = states(:, 2);
-Vx = states(:, 1 + 2*n_agents);
-Vy = states(:, 2 + 2*n_agents);
+Px = [x(1); states(:, 1)];
+Py = [x(2); states(:, 2)];
+Vx = [x(1 + 2*n_agents); states(:, 1 + 2*n_agents)];
+Vy = [x(2 + 2*n_agents); states(:, 2 + 2*n_agents)];
 Ax = u(:, 1);
 Ay = u(:, 2);

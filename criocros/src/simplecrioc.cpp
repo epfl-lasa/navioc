@@ -84,10 +84,10 @@ struct TrajectoryFrame
 
 	bool empty;
 	ros::Time t;
-	float Px[ConfigCrioc::T_horizon];
-	float Py[ConfigCrioc::T_horizon];
-	float Vx[ConfigCrioc::T_horizon];
-	float Vy[ConfigCrioc::T_horizon];
+	float Px[ConfigCrioc::T_horizon + 1];
+	float Py[ConfigCrioc::T_horizon + 1];
+	float Vx[ConfigCrioc::T_horizon + 1];
+	float Vy[ConfigCrioc::T_horizon + 1];
 	float Ax[ConfigCrioc::T_horizon];
 	float Ay[ConfigCrioc::T_horizon];
 	const float dt;
@@ -174,15 +174,19 @@ void receiveOCreply(const criocros::OCreply::ConstPtr& msg)
 {
 	refRob.t = msg->header.stamp;
 	refRob.empty = false;
-	for (unsigned int i = 0; i != ConfigCrioc::T_horizon; i++)
+	for (unsigned int i = 1; i != (ConfigCrioc::T_horizon + 1); i++)
 	{
 		 refRob.Px[i] = msg->Px[i];
 		 refRob.Py[i] = msg->Py[i];
 		 refRob.Vx[i] = msg->Vx[i];
 		 refRob.Vy[i] = msg->Vy[i];
-		 refRob.Ax[i] = msg->Ax[i];
-		 refRob.Ay[i] = msg->Ay[i];
+		 refRob.Ax[i-1] = msg->Ax[i-1];
+		 refRob.Ay[i-1] = msg->Ay[i-1];
 	}
+	refRob.Px[0] = msg->Px[0];
+	refRob.Py[0] = msg->Py[0];
+	refRob.Vx[0] = msg->Vx[0];
+	refRob.Vy[0] = msg->Vy[0];
 }
 
 void receiveTracks(const frame_msgs::TrackedPersons::ConstPtr& msg)
@@ -312,21 +316,30 @@ float clip(float value, float absBound)
 
 void computeCommand(const ros::Time& t, float& v, float& w)
 {
-	unsigned int i = (t - refRob.t).toSec()/refRob.dt;
+	float dt_total = (t - refRob.t).toSec();
+	unsigned int i = dt_total/refRob.dt;
 	if (i >= ConfigCrioc::T_horizon)
 	{
 		i = ConfigCrioc::T_horizon - 1;
 	}
+	float dt_ext = dt_total - i*refRob.dt;
+
+	float Ax = refRob.Ax[i];
+	float Ay = refRob.Ay[i];
+	float Vx = refRob.Vx[i] + dt_ext*Ax;
+	float Vy = refRob.Vy[i] + dt_ext*Ay;
+	//float Px = refRob.Px[i] + dt_ext*refRob.Vx[i] + dt_ext*dt_ext*Ax/2.f;
+	//float Py = refRob.Py[i] + dt_ext*refRob.Vy[i] + dt_ext*dt_ext*Ay/2.f;
 
 
 	float phi = robot.p[2];
-	v = std::cos(phi)*refRob.Vx[i] + std::sin(phi)*refRob.Vy[i];	
+	v = std::cos(phi)*Vx + std::sin(phi)*Vy;	
 
-	float v2(refRob.Vx[i]*refRob.Vx[i] + refRob.Vy[i]*refRob.Vy[i]);
+	float v2(Vx*Vx + Vy*Vy);
 
 	//v = std::sqrt(v2);
 
-	float vxa(refRob.Vx[i]*refRob.Ay[i] - refRob.Vy[i]*refRob.Ax[i]);
+	float vxa(Vx*Ay - Vy*Ax);
 
 	w = vxa/v2;
 }
