@@ -24,6 +24,60 @@ using tf2::Quaternion;
 using tf2::Vector3;
 using tf2::Transform;
 
+struct VForwardEstimator
+{
+	VForwardEstimator()
+	: a_max(13.2557)
+	, l_axle(0.545)
+	, r_wheel(0.2f)
+	, w_wheels {0.f, 0.f}
+	, w_wheels_set {0.f, 0.f}
+	, t(ros::Time::now()) { }
+
+	float getV(const ros::Time& t_now)
+	{
+		update(t_now);
+		float v_forward_left_wheel = w_wheels[0]*r_wheel;
+		float v_forward_right_wheel = w_wheels[1]*r_wheel;
+		return 0.5f*(v_forward_left_wheel + v_forward_right_wheel);
+	}
+
+	void updateSetpoints(const ros::Time& t_now, float v, float w)
+	{
+		update(t_now);
+		float v_forward_left_wheel = v - w*l_axle/2.f;
+		float w_left_wheel = v_forward_left_wheel/r_wheel;
+		float v_forward_right_wheel = v + w*l_axle/2.f;
+		float w_right_wheel = v_forward_right_wheel/r_wheel;
+		w_wheels_set[0] = w_left_wheel;
+		w_wheels_set[1] = w_right_wheel;
+	}
+
+	const float a_max, l_axle, r_wheel;
+private:
+	float w_wheels[2], w_wheels_set[2];
+	ros::Time t;
+
+	void update(const ros::Time& t_now)
+	{
+		float dt((t_now - t).toSec());
+		t = t_now;
+		for (unsigned int i = 0; i != 2; ++i)
+		{
+			float a((w_wheels_set[i] - w_wheels[i])/dt);
+			if (a > a_max)
+			{
+				a = a_max;
+			}
+			else if (a < -a_max)
+			{
+				a = -a_max;
+			}
+			w_wheels[i] += a*dt;
+		}
+	}
+};
+
 struct RobotStateEstimator
 {
 	RobotStateEstimator(float alpha, float beta, float pAlpha)
@@ -107,6 +161,7 @@ struct CrowdFrame
 };
 
 RobotStateEstimator robot(0.5f, 1.f, 0.5f);
+VForwardEstimator robotVf;
 VDesFrame vDesRob;
 TrajectoryFrame refRob;
 CrowdFrame crowd;
@@ -275,10 +330,12 @@ bool updateOCcall(const ros::Time& t, criocros::OCcall& msg)
 	}
 
 	msg.x.resize(Du*2);
+	float robVf(robotVf.getV(t));
+	float robV[] = {robVf*std::cos(robot.p[2]), robVf*std::sin(robot.p[2])};
 	for (unsigned int j = 0; j != 2; j++)
 	{
 		msg.x[j] = robot.p[j];
-		msg.x[Du + j] = robot.v[j];
+		msg.x[Du + j] = robV[j]; // robot.v[j];
 	}
 	if (!crowd.empty)
 	{
@@ -420,9 +477,14 @@ bool updateQoloCommand(const ros::Time& t, std_msgs::Float32MultiArray& msg)
 	float v, w;
 	computeCommand(t, v, w);
 
+	v = clip(v, maxV);
+	w = clip(w, maxW);
+
 	msg.data[0] = (t - t0).toSec();
-	msg.data[1] = clip(v, maxV);
-	msg.data[2] = clip(w, maxW);
+	msg.data[1] = v;
+	msg.data[2] = w;
+
+	robotVf.updateSetpoints(t, v, w);
 
 	return true;
 }
