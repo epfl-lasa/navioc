@@ -34,7 +34,7 @@ struct RobotStateEstimator
 
 	void update(const ros::Time& tObs, float* pObs, float* vObs)
 	{
-		if (!empty)
+		if (false) //(!empty)
 		{
 			float dt((tObs - t).toSec());
 			for (unsigned int i = 0; i != 3; i++)
@@ -111,7 +111,7 @@ VDesFrame vDesRob;
 TrajectoryFrame refRob;
 CrowdFrame crowd;
 
-bool constantCommand(false);
+bool constantCommand(true);
 ros::Duration dtTolVDes(0.1);
 ros::Duration dtTolRobot(0.1);
 ros::Duration dtTolRef(2.0);
@@ -119,7 +119,7 @@ ros::Time t0;
 const float maxV(1.5), maxW(1.5), minV(0.1), kV(0.f), kWPhi(0.f), kWXY(0.f);
 const float vMultiplier(1.f), wMultiplier(1.f);
 bool adaptiveFeedforward(true), wFromlateralAcceleration(false);
-float desiredSpeed(1.f);
+float desiredSpeed(0.5f);
 
 /*struct Observation
 {
@@ -336,6 +336,10 @@ void computeCommand(const ros::Time& t, float& v, float& w)
 	v = std::cos(phi)*Vx + std::sin(phi)*Vy;	
 
 	float v2(Vx*Vx + Vy*Vy);
+	if (v2 < 0.09f)
+	{
+		v2 = 0.09f;
+	}
 
 	//v = std::sqrt(v2);
 
