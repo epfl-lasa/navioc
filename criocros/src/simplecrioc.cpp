@@ -80,7 +80,7 @@ struct TrajectoryFrame
 {
 	TrajectoryFrame()
 	: empty(true)
-	, dt(0.1f) { }
+	, dt(ConfigCrioc::h_step) { }
 
 	bool empty;
 	ros::Time t;
@@ -312,8 +312,20 @@ float clip(float value, float absBound)
 
 void computeCommand(const ros::Time& t, float& v, float& w)
 {
-	v = 0.f;
-	w = 0.f;
+	unsigned int i = (t - refRob.t).toSec()/refRob.dt;
+	if (i >= ConfigCrioc::T_horizon)
+	{
+		i = ConfigCrioc::T_horizon - 1;
+	}
+
+	float v2(refRob.Vx[i]*refRob.Vx[i] + refRob.Vy[i]*refRob.Vy[i]);
+
+	v = std::sqrt(v2);
+
+	float vxa(refRob.Vx[i]*refRob.Ay[i] - refRob.Vy[i]*refRob.Ax[i]);
+
+	w = vxa/v2;
+}
 	/*
 	unsigned int i = (t - refRob.t).toSec()/refRob.dt;
 	i += 9;
@@ -375,7 +387,6 @@ void computeCommand(const ros::Time& t, float& v, float& w)
 
 	w = clip(w, maxW);
 	*/
-}
 
 bool updateQoloCommand(const ros::Time& t, std_msgs::Float32MultiArray& msg)
 {
