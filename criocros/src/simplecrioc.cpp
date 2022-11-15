@@ -111,7 +111,7 @@ VDesFrame vDesRob;
 TrajectoryFrame refRob;
 CrowdFrame crowd;
 
-bool constantCommand(true);
+bool constantCommand(false);
 ros::Duration dtTolVDes(0.1);
 ros::Duration dtTolRobot(0.1);
 ros::Duration dtTolRef(2.0);
@@ -318,9 +318,13 @@ void computeCommand(const ros::Time& t, float& v, float& w)
 		i = ConfigCrioc::T_horizon - 1;
 	}
 
+
+	float phi = robot.p[2];
+	v = std::cos(phi)*refRob.Vx[i] + std::sin(phi)*refRob.Vy[i];	
+
 	float v2(refRob.Vx[i]*refRob.Vx[i] + refRob.Vy[i]*refRob.Vy[i]);
 
-	v = std::sqrt(v2);
+	//v = std::sqrt(v2);
 
 	float vxa(refRob.Vx[i]*refRob.Ay[i] - refRob.Vy[i]*refRob.Ax[i]);
 

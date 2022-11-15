@@ -45,10 +45,10 @@ test_params = struct(...
 	'example_recompute_optimal', false ... 
 );
 
-tic
-[re_samples, ~] = resampleexamples(mdp_data, 'crowdworld', ...
-			reward, reward, test_params, {sample}, {}, true);
-toc
+%tic
+%[re_samples, ~] = resampleexamples(mdp_data, 'crowdworld', ...
+%			reward, reward, test_params, {sample}, {}, true);
+%toc
 
 % Set up optimization options.
 options = struct();
@@ -72,12 +72,12 @@ u = reshape(u_, size(sample.u, 1), mdp_data.udims);
 states = feval('crowdworldcontrol', mdp_data, sample.s, u);
 toc
 
-disp(max(max(abs(re_samples{1}.u - u))))
-disp(max(max(abs(re_samples{1}.states - states))))
+%disp(max(max(abs(re_samples{1}.u - u))))
+%disp(max(max(abs(re_samples{1}.states - states))))
 
-Px = re_samples{1}.states(:, 1);
-Py = re_samples{1}.states(:, 2);
-Vx = re_samples{1}.states(:, 1 + 2*n_agents);
-Vy = re_samples{1}.states(:, 2 + 2*n_agents);
-Ax = re_samples{1}.u(:, 1);
-Ay = re_samples{1}.u(:, 2);
+Px = states(:, 1);
+Py = states(:, 2);
+Vx = states(:, 1 + 2*n_agents);
+Vy = states(:, 2 + 2*n_agents);
+Ax = u(:, 1);
+Ay = u(:, 2);
