@@ -1,6 +1,8 @@
-function [Px, Py, Vx, Vy, Ax, Ay] = optimalcontrol(x, u_1_init, v_des)
+function [Px, Py, Vx, Vy, Ax, Ay] = optimalcontrol(x, Ux_1_init, Uy_1_init, v_des)
 
 n_agents = length(x)/4;
+
+u_1_init = [Ux_1_init, Uy_1_init];
 
 T = size(u_1_init, 1);
 sample = struct('s', x, 'u', [u_1_init, zeros(T, 2*(n_agents - 1))]);

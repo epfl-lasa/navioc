@@ -12,7 +12,7 @@ T = 96;
 u_1_init = zeros(T, 2);
 v_des = [1.3, 0, -1.3, 0];
 
-[Px, Py, Vx, Vy, Ax, Ay] = optimalcontrol(x, u_1_init, v_des);
+[Px, Py, Vx, Vy, Ax, Ay] = optimalcontrol(x, u_1_init(:, 1), u_1_init(:, 2), v_des);
 
 plot(Px, Py)
 daspect([1,1,1])

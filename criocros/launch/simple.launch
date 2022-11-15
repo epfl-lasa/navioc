@@ -1,0 +1,6 @@
+<launch>
+	<arg name="ocpath" default="/home/qolo/errpnav/matlab/oc_cpp" />
+	<node pkg="criocros" type="ocnode" name="ocnode" args="$(arg ocpath)" output="screen"/>
+
+	<node pkg="criocros" type="simplecrioc" name="simplecriocnode" output="screen"/>
+</launch>
