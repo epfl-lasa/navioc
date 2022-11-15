@@ -1,4 +1,4 @@
-function [Px, Py, Vx, Vy, Ax, Ay] = optimalcontrol(x, Ux_1_init, Uy_1_init, v_des)
+function [Px, Py, Vx, Vy, Ax, Ay] = optimalcontrol(x, Ux_1_init, Uy_1_init, v_des, h)
 
 n_agents = length(x)/4;
 
@@ -8,7 +8,7 @@ T = size(u_1_init, 1);
 sample = struct('s', x, 'u', [u_1_init, zeros(T, 2*(n_agents - 1))]);
 
 mdp_data = struct(...
-	'time_step', 0.05, ... [s]
+	'time_step', h, ... [s]
 	'n_ped', n_agents, ...
 	'dims', 4*n_agents, ... positions, velocities
 	'udims', 2*n_agents, ... accelerations
@@ -64,13 +64,11 @@ for f = 1:length(reward.features)
 	reward.features{f}.fast = true;
 end
 
-tic
 % Run minFunc.
 [u_, r] = minFunc(@(p)fastreward(p, x, mdp_data, 'crowdworld', ...
 	reward), sample.u(:), options);
 u = reshape(u_, size(sample.u, 1), mdp_data.udims);
 states = feval('crowdworldcontrol', mdp_data, sample.s, u);
-toc
 
 %disp(max(max(abs(re_samples{1}.u - u))))
 %disp(max(max(abs(re_samples{1}.states - states))))

@@ -46,7 +46,10 @@ void process_message(const criocros::OCcall::ConstPtr& msg)
     for (auto& z : v_des)
     	z = msg->v_des[i++];
 
-    vector<Array> args({x, *Ux_1_init, *Uy_1_init, v_des});
+    TypedArray<double> h(factory->createArray<double>({ 1, 1 }));
+    h[0] = ConfigCrioc::h_step;
+
+    vector<Array> args({x, *Ux_1_init, *Uy_1_init, v_des, h});
 
     vector<Array> res = matl->feval(u"optimalcontrol", 6, args);
 
