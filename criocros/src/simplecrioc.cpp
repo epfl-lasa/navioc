@@ -184,7 +184,7 @@ const float maxV(1.5), maxW(1.5), minV(0.1), kV(0.f), kWPhi(0.f), kWXY(0.f);
 const float vMultiplier(1.f), wMultiplier(1.f);
 bool adaptiveFeedforward(true), wFromlateralAcceleration(false);
 float desiredSpeed(0.5f);
-
+const ros::Duration dt_warm_up(10.f);
 /*struct Observation
 {
 	Observation(float* p, float* v, const ros::Time& t)
@@ -489,11 +489,18 @@ bool updateQoloCommand(const ros::Time& t, std_msgs::Float32MultiArray& msg)
 	v = clip(v, maxV);
 	w = clip(w, maxW);
 
+	if (t - t0 < dt_warm_up)
+	{
+		v = 0.f;
+		w = 0.f;
+		ROS_INFO("Warming up ...");
+	}
+
+	robotVf.updateSetpoints(t, v, w);
+
 	msg.data[0] = (t - t0).toSec();
 	msg.data[1] = v;
 	msg.data[2] = w;
-
-	robotVf.updateSetpoints(t, v, w);
 
 	return true;
 }
