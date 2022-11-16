@@ -1,4 +1,6 @@
-function [Px, Py, Vx, Vy, Ax, Ay] = optimalcontrol(x, Ux_1_init, Uy_1_init, v_des, h)
+function [Px, Py, Vx, Vy, Ax, Ay] = optimalcontrol(x_orig, Ux_1_init, Uy_1_init, v_des_orig, h)
+
+[x, v_des] = reduce_crowd(x_orig, v_des_orig, 3, 0.2);
 
 n_agents = length(x)/4;
 
@@ -53,7 +55,7 @@ test_params = struct(...
 % Set up optimization options.
 options = struct();
 options.Method = 'lbfgs';
-options.maxIter = 1000;
+options.maxIter = 40;
 options.MaxFunEvals = 1000;
 options.display = 'on';
 options.TolX = 1.0e-16;
@@ -81,3 +83,44 @@ Vx = [x(1 + 2*n_agents); states(:, 1 + 2*n_agents)];
 Vy = [x(2 + 2*n_agents); states(:, 2 + 2*n_agents)];
 Ax = u(:, 1);
 Ay = u(:, 2);
+
+function [x_red, v_des_red] = reduce_crowd(x, v_des, n_ped_max, v_mag_min)
+
+n_agents = length(x)/4;
+n_ped = n_agents - 1;
+
+if n_ped <= n_ped_max
+	x_red = x;
+	v_des_red = v_des;
+else
+	p_red = zeros(1, 2*(n_ped_max + 1));
+	v_red = zeros(1, 2*(n_ped_max + 1));
+	v_des_red = zeros(1, 2*(n_ped_max + 1));
+
+	p_red(1:2) = x(1:2);
+	v_red(1:2) = x(n_agents*2 + (1:2));
+	v_des_red(1:2) = v_des(1:2);
+
+	pos = reshape(x(3:(2*n_agents)), [2, n_ped]);
+	relpos = pos - x(1:2)';
+	v_rob = x(n_agents*2 + (1:2));
+	v_mag_rob = sqrt(sum(v_rob.^2));
+	if v_mag_rob > v_mag_min
+		ex_rob = v_rob./v_mag_rob;
+		ey_rob = [-ex_rob(2), ex_rob(1)];
+		score = -abs(ey_rob*relpos);
+		relpos_x = ex_rob*relpos;
+		score(relpos_x > 0) = score(relpos_x > 0) - 0.25*relpos_x(:, relpos_x > 0);
+		score(relpos_x<= 0) = score(relpos_x<= 0) + 3.0*relpos_x(:, relpos_x <= 0);	
+	else
+		score = -sum(relpos.^2);
+	end
+	[~, idx] = sort(score, 'descend');
+	i_keep = idx(1:n_ped_max);
+	jj = reshape([i_keep*2 - 1; i_keep*2], [1, 2*n_ped_max]);
+	p_red(3:end) = x(2 + jj);
+	v_red(3:end) = x(n_agents*2 + 2 + jj);	
+	v_des_red(3:end) = v_des(2 + jj);
+
+	x_red = [p_red, v_red];
+end
