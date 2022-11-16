@@ -65,8 +65,10 @@ for f = 1:length(reward.features)
 end
 
 % Run minFunc.
+tic
 [u_, r] = minFunc(@(p)fastreward(p, x, mdp_data, 'crowdworld', ...
 	reward), sample.u(:), options);
+toc
 u = reshape(u_, size(sample.u, 1), mdp_data.udims);
 states = feval('crowdworldcontrol', mdp_data, sample.s, u);
 

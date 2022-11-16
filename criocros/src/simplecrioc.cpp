@@ -520,6 +520,8 @@ int main(int argc, char** argv)
 	std_msgs::Float32MultiArray msgQoloCommand;
 	msgQoloCommand.data.resize(3);
 
+	//ros::Rate(0.1).sleep();
+
 	t0 = ros::Time::now();
 	while (ros::ok())
 	{
