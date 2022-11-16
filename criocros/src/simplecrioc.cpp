@@ -32,7 +32,7 @@ struct VForwardEstimator
 	, r_wheel(0.2f)
 	, w_wheels {0.f, 0.f}
 	, w_wheels_set {0.f, 0.f}
-	, t(ros::Time::now()) { }
+	, empty(true) { }
 
 	float getV(const ros::Time& t_now)
 	{
@@ -56,24 +56,33 @@ struct VForwardEstimator
 	const float a_max, l_axle, r_wheel;
 private:
 	float w_wheels[2], w_wheels_set[2];
+	bool empty;
 	ros::Time t;
 
 	void update(const ros::Time& t_now)
 	{
-		float dt((t_now - t).toSec());
-		t = t_now;
-		for (unsigned int i = 0; i != 2; ++i)
+		if (empty)
 		{
-			float a((w_wheels_set[i] - w_wheels[i])/dt);
-			if (a > a_max)
+			empty = false;
+			t = t_now;
+		}
+		else if (t_now != t)
+		{
+			float dt((t_now - t).toSec());
+			t = t_now;
+			for (unsigned int i = 0; i != 2; ++i)
 			{
-				a = a_max;
+				float a((w_wheels_set[i] - w_wheels[i])/dt);
+				if (a > a_max)
+				{
+					a = a_max;
+				}
+				else if (a < -a_max)
+				{
+					a = -a_max;
+				}
+				w_wheels[i] += a*dt;
 			}
-			else if (a < -a_max)
-			{
-				a = -a_max;
-			}
-			w_wheels[i] += a*dt;
 		}
 	}
 };
