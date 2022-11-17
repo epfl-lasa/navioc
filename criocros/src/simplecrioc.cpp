@@ -183,6 +183,7 @@ ros::Time t0;
 const float maxV(1.5), maxW(1.5f), minV(0.1), kV(0.f), kWPhi(0.f), kWXY(0.f);
 const float vMultiplier(1.f), wMultiplier(1.f);
 bool adaptiveFeedforward(true), wFromlateralAcceleration(false);
+bool use_ref_point(true);
 float desiredSpeed(1.f);
 const float dt_warm_up(50.f);
 /*struct Observation
@@ -311,6 +312,8 @@ void exportSamples()
   	myfile.close();
 }*/
 
+float phi_oc_call; 
+
 bool updateOCcall(const ros::Time& t, criocros::OCcall& msg)
 {
 	if ((!constantCommand) && (vDesRob.empty || t - vDesRob.t > dtTolVDes || vDesRob.t - t > dtTolVDes) ||
@@ -364,6 +367,8 @@ bool updateOCcall(const ros::Time& t, criocros::OCcall& msg)
 		}
 	}
 
+	phi_oc_call = robot.p[2];
+
 	return true;
 }
 
@@ -398,20 +403,28 @@ void computeCommand(const ros::Time& t, float& v, float& w)
 	//float Py = refRob.Py[i] + dt_ext*refRob.Vy[i] + dt_ext*dt_ext*Ay/2.f;
 
 
-	float phi = robot.p[2];
-	v = std::cos(phi)*Vx + std::sin(phi)*Vy;	
-
-	float v2(Vx*Vx + Vy*Vy);
-	if (v2 < 0.09f)
+	if (!use_ref_point)
 	{
-		v2 = 0.09f;
+		float phi = robot.p[2];
+		v = std::cos(phi)*Vx + std::sin(phi)*Vy;	
+
+		float v2(Vx*Vx + Vy*Vy);
+		if (v2 < 0.09f)
+		{
+			v2 = 0.09f;
+		}
+
+		//v = std::sqrt(v2);
+
+		float vxa(Vx*Ay - Vy*Ax);
+
+		w = vxa/v2;
 	}
-
-	//v = std::sqrt(v2);
-
-	float vxa(Vx*Ay - Vy*Ax);
-
-	w = vxa/v2;
+	else
+	{
+		v = std::cos(phi_oc_call)*Vx + std::sin(phi_oc_call)*Vy;
+		w = (-std::sin(phi_oc_call)*Vx + std::cos(phi_oc_call)*Vy)/0.25f;
+	}
 }
 	/*
 	unsigned int i = (t - refRob.t).toSec()/refRob.dt;
