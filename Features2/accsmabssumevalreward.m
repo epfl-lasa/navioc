@@ -4,8 +4,8 @@ function [r, g, drdu, d2rdudu, drdx, d2rdxdx, gfull, Hfull] = ...
 normalizer = mdp_data.n_ped*reward.expec;
 
 Nt = size(u, 1);
-Nu = size(u, 2);
-Nx = size(states, 2);
+Nu = mdp_data.udims;
+Nx = mdp_data.dims;
 
 if reward.type_other
     idx = mdp_data.idx_other;
@@ -20,16 +20,16 @@ end
 ax_jj = idx*2 - 1;
 ay_jj = ax_jj + 1;
 
-Ax = states(:, ax_jj);
-Ay = states(:, ay_jj);
+Ax = u(:, ax_jj);
+Ay = u(:, ay_jj);
 
-A2 = Ax.^2 + Ay.^2;
+A2 = Ax.^2 + Ay.^2 + 1e-4;
 Z = sqrt(A2);
 
 s = reward.s;
 
 Expz = exp(-2*s*Z);
-Fz = Z + 1/s*log(1 + Expz);
+Fz = Z + 1/s*log(1 + Expz) - 1/s*log(2);
 
 r = sum(Fz, 2)/normalizer;
 if nargout >= 2

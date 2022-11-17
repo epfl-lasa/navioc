@@ -41,6 +41,9 @@ for f = 1:length(theta)
 		%disp(sum(sum(cg)))
 
 		g = g + theta(f)*cg;
+	case 'accsmabssum'
+		[cr, cg] = accsmabssumevalreward(reward.features{f}, mdp_data, s, u);
+		g = g + theta(f)*cg;
 	otherwise 
 		% x-feature
 		[cr, cdrdx] = evaluatexfeature(reward.features{f}, mdp_data, states);

@@ -7,11 +7,11 @@ addpath cioc/Utilities/minFunc
 addpath cioc/Auglag
 addpath cioc/Laplace
 
-x = [-5, 0, 5, 0.1, 1.3, 0, -1.3, 0];
+x = [-5, 0, 5, 0.01, 1.3, 0, -1.3, 0];
 T = 96;
 h = 0.05;
 t = h*(0:T)';
-u_1_init = [zeros(T, 1), -20*ones(T, 1)];
+u_1_init = [zeros(T, 1), -10*ones(T, 1)];
 v_des = [1.3, 0, -1.3, 0];
 
 tic
