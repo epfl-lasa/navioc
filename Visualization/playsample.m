@@ -70,16 +70,13 @@ for i = 1:size(Px, 1)
 	ylim(ax, y_limits)
 	daspect(ax, [1, 1, 1])
 	if ~no_video
-		pause(0.05)
-		if isobject(fig) & ~isgraphics(fig)
-			break
-		end
-	end
-	if ~no_video
 		if isfield(mdp_data, 'sampling_time')
 			pause(mdp_data.sampling_time)
 		else
 			pause(0.05)
+		end
+		if isobject(fig) & ~isgraphics(fig)
+			break
 		end
 	end
 end

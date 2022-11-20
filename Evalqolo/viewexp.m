@@ -1,4 +1,4 @@
-function view(mat)
+function viewexp(mat)
 hold on
 tracksview(mat.tracked_persons)
 odomview(mat.odom_sample)
@@ -25,12 +25,18 @@ plot(odom_sample.states(1, 1), odom_sample.states(1, 2), 'k*')
 plot(odom_sample.states(end, 1), odom_sample.states(end, 2), 'ko')
 
 function occallview(oc_call, dt)
+if isempty(oc_call.t)
+    return
+end
 h = mean(oc_call.t(2:end) - oc_call.t(1:(end - 1)));
 ii = 1:ceil(dt/h):length(oc_call.t);
 plot(oc_call.x(ii, 1), oc_call.x(ii, 2), 'rs')
 quiver(oc_call.x(ii, 1), oc_call.x(ii, 2), oc_call.x(ii, 3), oc_call.x(ii, 4), 'r')
 
 function ocreplyview(oc_reply, dt)
+if isempty(oc_reply.t)
+    return
+end
 h = mean(oc_reply.t(2:end) - oc_reply.t(1:(end - 1)));
 ii = 1:ceil(dt/h):length(oc_reply.t);
 for i = ii
