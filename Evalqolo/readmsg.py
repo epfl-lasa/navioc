@@ -2,6 +2,7 @@
 #import sys
 #import os
 #import tf2_py
+import tf
 import rospy
 import rosbag
 import numpy as np
@@ -78,8 +79,16 @@ class OdomSample:
 		self.states = np.empty((n_msg, 4))
 		for i, (topic, msg, t) in enumerate(bag.read_messages(topics=['/t265/odom/sample'])):
 			self.t[i] = (t - t0).to_sec()
+
+			rot_odom_pose = tf.transformations.quaternion_matrix(np.array([
+				msg.pose.pose.orientation.x, msg.pose.pose.orientation.y,
+				msg.pose.pose.orientation.z, msg.pose.pose.orientation.w]))
+
+			velocity = np.matmul(rot_odom_pose, np.array([msg.twist.twist.linear.x, 
+				msg.twist.twist.linear.y, msg.twist.twist.linear.z, 1]))
+
 			self.states[i, :] = [msg.pose.pose.position.x, msg.pose.pose.position.y, 
-				msg.twist.twist.linear.x, msg.twist.twist.linear.y]
+				velocity[0], velocity[1]]
 
 class RemoteCommands:
 	def __init__(self, bag, t0):

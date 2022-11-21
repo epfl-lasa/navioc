@@ -1,5 +1,18 @@
 function playexp(mat, dt_start, n_skip, n_skip_rob, kill)
 
+if nargin < 5
+	kill = true;
+end
+if nargin < 4
+	n_skip_rob = 50;
+end
+if nargin < 3
+	n_skip = 5;
+end
+if nargin < 2
+	dt_start = 0.0;
+end
+
 dt_memory = 5.0;
 h = 0.05;
 
@@ -23,11 +36,16 @@ y_limits = [-8, 8];
 
 tracks_def = mat.tracked_persons.isdef;
 tracks_t = mat.tracked_persons.t;
-tracks_P = mat.tracked_persons.states(:, :, 1:2);
-tracks_V = mat.tracked_persons.states(:, :, 3:4);
+if mat.tracked_persons.n_msg ~= 0
+	tracks_P = mat.tracked_persons.states(:, :, 1:2);
+	tracks_V = mat.tracked_persons.states(:, :, 3:4);
+else
+	tracks_P = ones(0, 0, 2);
+	tracks_V = ones(0, 0, 2);
+end	
 tmp_handles = [];
 i = 0;
-while i <= nt
+while i < nt
 	i = i + 1;
 	delete(tmp_handles)
 	tmp_handles = [];
@@ -49,10 +67,12 @@ while i <= nt
 			end
 		end
 	end
-	UV = reshape(tracks_V(ii_(end), tracks_def(ii_(end), :), :), [], 2);
-	XY = reshape(tracks_P(ii_(end), tracks_def(ii_(end), :), :), [], 2);
-	h_quiver = quiver(ax, XY(:, 1), XY(:, 2), UV(:, 1), UV(:, 2), 0, 'Color', 'k');
-	tmp_handles = [tmp_handles, h_quiver];
+	if ~isempty(ii_)
+		UV = reshape(tracks_V(ii_(end), tracks_def(ii_(end), :), :), [], 2);
+		XY = reshape(tracks_P(ii_(end), tracks_def(ii_(end), :), :), [], 2);
+		h_quiver = quiver(ax, XY(:, 1), XY(:, 2), UV(:, 1), UV(:, 2), 0, 'Color', 'k');
+		tmp_handles = [tmp_handles, h_quiver];
+	end
 
 	% ODOM_SAMPLE
 	ii_ = find(mat.odom_sample.t <= t(i) & mat.odom_sample.t >= (t(i) - dt_memory));
@@ -65,9 +85,11 @@ while i <= nt
 		tmp_handles = [tmp_handles, ...
 			plotcircle(ax, mat.odom_sample.states(i_, 1), mat.odom_sample.states(i_, 2), 0.2, w1*ones(1,3))];
 	end
-	h_quiver = quiver(ax, mat.odom_sample.states(i_, 1), mat.odom_sample.states(i_, 2), ...
-		mat.odom_sample.states(i_, 3), mat.odom_sample.states(i_, 4), 0, 'Color', 'r');
-	tmp_handles = [tmp_handles, h_quiver];
+	if ~isempty(ii_)
+		h_quiver = quiver(ax, mat.odom_sample.states(i_, 1), mat.odom_sample.states(i_, 2), ...
+			mat.odom_sample.states(i_, 3), mat.odom_sample.states(i_, 4), 0, 'Color', 'r');
+		tmp_handles = [tmp_handles, h_quiver];
+	end
 
 	% OC_REPLY
 	ii_ = find(mat.oc_reply.t <= t(i) & mat.oc_reply.t >= (t(i) - dt_memory));
@@ -80,7 +102,7 @@ while i <= nt
 	xlim(ax, x_limits)
 	ylim(ax, y_limits)
 	daspect(ax, [1, 1, 1])
-	title(sprintf('t=%.2fs', t(i) - mat.odom_sample.t(1)))
+	title(ax, sprintf('t=%.2fs', t(i) - mat.odom_sample.t(1)))
 	pause(0.1)
 	if isobject(fig) & ~isgraphics(fig)
 		break

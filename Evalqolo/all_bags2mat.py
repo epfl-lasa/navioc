@@ -15,7 +15,7 @@ def process_dir(rootdir):
 		export(bag, mat_file_path)
 		#print mat_file_path
 
-#process_dir('/media/gonond/LaCieG/nov2022experiments/crowdNoon/naviocNoon')
+process_dir('/media/gonond/LaCieG/nov2022experiments/crowdNoon/naviocNoon')
 process_dir('/media/gonond/LaCieG/nov2022experiments/crowdNoon/combNoon')
 process_dir('/media/gonond/LaCieG/nov2022experiments/crowdNoon/ORCAfails')
 process_dir('/media/gonond/LaCieG/nov2022experiments/crowd')
