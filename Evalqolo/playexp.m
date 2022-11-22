@@ -31,7 +31,7 @@ else
 	C = colororder;
 end
 
-x_limits = [-5, 45];
+x_limits = [-3, 25];
 y_limits = [-8, 8];
 
 tracks_def = mat.tracked_persons.isdef;
@@ -67,17 +67,11 @@ while i < nt
 			end
 		end
 	end
-	if ~isempty(ii_)
-		UV = reshape(tracks_V(ii_(end), tracks_def(ii_(end), :), :), [], 2);
-		XY = reshape(tracks_P(ii_(end), tracks_def(ii_(end), :), :), [], 2);
-		h_quiver = quiver(ax, XY(:, 1), XY(:, 2), UV(:, 1), UV(:, 2), 0, 'Color', 'k');
-		tmp_handles = [tmp_handles, h_quiver];
-	end
 
 	% ODOM_SAMPLE
-	ii_ = find(mat.odom_sample.t <= t(i) & mat.odom_sample.t >= (t(i) - dt_memory));
-	for i_ = ii_
-		if i_ ~= ii_(end) && mod(i_, n_skip_rob) ~= 0
+	ii_odom = find(mat.odom_sample.t <= t(i) & mat.odom_sample.t >= (t(i) - dt_memory));
+	for i_ = ii_odom
+		if i_ ~= ii_odom(end) && mod(i_, n_skip_rob) ~= 0
 			continue
 		end
 		w1 = (t(i) - mat.odom_sample.t(i_))/dt_memory;
@@ -85,18 +79,37 @@ while i < nt
 		tmp_handles = [tmp_handles, ...
 			plotcircle(ax, mat.odom_sample.states(i_, 1), mat.odom_sample.states(i_, 2), 0.2, w1*ones(1,3))];
 	end
-	if ~isempty(ii_)
-		h_quiver = quiver(ax, mat.odom_sample.states(i_, 1), mat.odom_sample.states(i_, 2), ...
-			mat.odom_sample.states(i_, 3), mat.odom_sample.states(i_, 4), 0, 'Color', 'r');
-		tmp_handles = [tmp_handles, h_quiver];
-	end
 
 	% OC_REPLY
-	ii_ = find(mat.oc_reply.t <= t(i) & mat.oc_reply.t >= (t(i) - dt_memory));
+	ii_oc = find(mat.oc_reply.t <= t(i) & mat.oc_reply.t >= (t(i) - dt_memory));
+	if ~isempty(ii_oc)
+		i_1 = ii_oc(1);
+		i_2 = ii_oc(end);
+		for i_m = i_1:(i_2-1)
+			w1 = (t(i) - mat.oc_reply.t(i_m))/dt_memory;
+			w0 = 1 - w1;
+			C_m = w0*[0, 1, 0] + w1*[1, 1, 1];
+			h_oc_1 = plot(mat.oc_reply.states(i_m, :, 1)', mat.oc_reply.states(i_m, :, 2)', 'Color', C_m, 'LineStyle', ':')';
+			tmp_handles = [tmp_handles, h_oc_1];
+		end
+		h_oc_2 = plot(mat.oc_reply.states(i_2, :, 1), mat.oc_reply.states(i_2, :, 2), 'g');
+		tmp_handles = [tmp_handles, h_oc_2];
+	end
+
+	% VELOCITIES
+	XY = zeros(0, 2);
+	UV = zeros(0, 2);
 	if ~isempty(ii_)
-		i_ = ii_(end);
-		h_oc = plot(mat.oc_reply.states(i_, :, 1), mat.oc_reply.states(i_, :, 2), 'g');
-		tmp_handles = [tmp_handles, h_oc];
+		UV = [UV; reshape(tracks_V(ii_(end), tracks_def(ii_(end), :), :), [], 2)];
+		XY = [XY; reshape(tracks_P(ii_(end), tracks_def(ii_(end), :), :), [], 2)];
+	end	
+	if ~isempty(ii_odom)
+		XY = [XY; mat.odom_sample.states(i_, 1), mat.odom_sample.states(i_, 2)];
+		UV = [UV; mat.odom_sample.states(i_, 3), mat.odom_sample.states(i_, 4)];
+	end
+	if ~isempty(UV)
+		h_quiver = quiver(ax, XY(:, 1), XY(:, 2), UV(:, 1), UV(:, 2), 0, 'Color', 'r');
+		tmp_handles = [tmp_handles, h_quiver];
 	end
 
 	xlim(ax, x_limits)

@@ -1,4 +1,4 @@
-function fpaths = getfpaths()
+function res = getfpaths(setup, method, i)
 
 fpaths = struct(...
 	'crowd', struct(...
@@ -39,3 +39,10 @@ fpaths = struct(...
 			"static_obstacle/matfiles/2022-11-17-23-13-03.mat"
 			"static_obstacle/matfiles/2022-11-18-09-57-06.mat"]) ...
 );
+
+if nargin < 3
+    res = fpaths;
+else
+    tmp = fpaths.(setup).(method);
+    res = tmp(i);
+end
