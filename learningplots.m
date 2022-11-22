@@ -12,7 +12,7 @@ plotquartiles(t, resL2.D_train, [1, 0.65, 0.65])
 plotquartiles(t, resL1.D_train, [0.5, 1, 1])
 plot(t, mean(resL2.D_train, 2), 'r', 'DisplayName', 'NavIOC-$L^2$') %, 'LineWidth', 2)
 plot(t, mean(resL1.D_train, 2), 'Color', [0,0.7,0.7], 'DisplayName', 'NavIOC-$L^1$')
-plot(t, mean(resL2.D_train_cv, 2), 'b-.', 'DisplayName', 'constant velocity')
+plot(t, mean(resL2.D_train_cv, 2), 'b-.', 'DisplayName', 'CV')
 xlabel('$\Delta t$ [s]', 'Interpreter', 'Latex')
 ylabel('Displacement Error [m]', 'Interpreter', 'Latex')
 leg = legend();
@@ -25,7 +25,7 @@ plotquartiles(t, resL2.D_test, [1, 0.65, 0.65])
 plotquartiles(t, resL1.D_test, [0.5, 1, 1])
 plot(t, mean(resL2.D_test, 2), 'r', 'DisplayName', 'NavIOC-$L^2$') %, 'LineWidth', 2)
 plot(t, mean(resL1.D_test, 2), 'Color', [0,0.7,0.7], 'DisplayName', 'NavIOC-$L^1$')
-plot(t, mean(resL2.D_test_cv, 2), 'b-.', 'DisplayName', 'constant velocity')
+plot(t, mean(resL2.D_test_cv, 2), 'b-.', 'DisplayName', 'CV')
 xlabel('$\Delta t$ [s]', 'Interpreter', 'Latex')
 ylabel('Displacement Error [m]', 'Interpreter', 'Latex')
 leg = legend();
@@ -65,10 +65,28 @@ plotquartiles(t_eth, resL2.D_eth, [1, 0.65, 0.65])
 plotquartiles(t_eth, resL1.D_eth, [0.5, 1, 1])
 plot(t_eth, mean(resL2.D_eth, 2), 'r', 'DisplayName', 'NavIOC-$L^2$') %, 'LineWidth', 2)
 plot(t_eth, mean(resL1.D_eth, 2), 'Color', [0,0.7,0.7], 'DisplayName', 'NavIOC-$L^1$')
-plot(t_eth, mean(resL2.D_eth_cv, 2), 'b-.', 'DisplayName', 'constant velocity')
+plot(t_eth, mean(resL2.D_eth_cv, 2), 'b-.', 'DisplayName', 'CV')
 plot(t_kretzschmar, err_kretzschmar, 'ko--', 'DisplayName', 'Kretzschmar et al. (2016)')
 leg = legend();
 set(leg, 'Interpreter', 'Latex');
 xlabel('$\Delta t$ [s]', 'Interpreter', 'Latex')
 ylabel('Displacement Error [m]', 'Interpreter', 'Latex')
 title('Prediction on ETH (test) dataset')
+
+
+walls = vario('walls_diamor_1.mat', 'walls');
+
+i = 4;
+playsample(resL2.samples_train{i}, resL2.mdp_data_arr_train{i}, true, [38, 56], [0, 5], walls);
+playsample(resL2.re_samples_train{i}, resL2.mdp_data_arr_train{i}, true, [38, 56], [0, 5], walls);
+playsample(resL1.re_samples_train{i}, resL2.mdp_data_arr_train{i}, true, [38, 56], [0, 5], walls);
+
+i = 14;
+playsample(resL2.samples_test{i}, resL2.mdp_data_arr_test{i}, true, [30, 40], [3, 6], walls);
+playsample(resL2.re_samples_test{i}, resL2.mdp_data_arr_test{i}, true, [30, 40], [3, 6], walls);
+playsample(resL1.re_samples_test{i}, resL2.mdp_data_arr_test{i}, true, [30, 40], [3, 6], walls);
+
+i = 22;
+playsample(resL2.trajlets{i}, resL2.mdp_data_arr_eth{i}, true, [-1, 13], [2, 8], []);
+playsample(resL2.re_samples_eth{i}, resL2.mdp_data_arr_eth{i}, true, [-1, 13], [2, 8], []);
+playsample(resL1.re_samples_eth{i}, resL2.mdp_data_arr_eth{i}, true, [-1, 13], [2, 8], []);
