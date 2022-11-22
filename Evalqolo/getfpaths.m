@@ -8,7 +8,6 @@ fpaths = struct(...
 			"crowd/matfiles/2022-11-18-10-09-07.mat"
 			"crowd/matfiles/2022-11-18-10-11-21.mat"
 			"crowd/matfiles/2022-11-18-10-14-10.mat"
-			"crowd/matfiles/2022-11-18-10-16-54.mat"
 			"crowdNoon/naviocNoon/matfiles/2022-11-18-13-23-54.mat"], ...
 		'comb', [
 			"crowdNoon/combNoon/matfiles/2022-11-18-12-50-48.mat"
@@ -21,7 +20,8 @@ fpaths = struct(...
 			"crowdNoon/combNoon/matfiles/2022-11-18-13-08-21.mat"
 			"crowdNoon/combNoon/matfiles/2022-11-18-13-10-50.mat"
 			"crowdNoon/combNoon/matfiles/2022-11-18-13-13-00.mat"
-			"crowdNoon/combNoon/matfiles/2022-11-18-13-16-02.mat"], ...
+			"crowdNoon/combNoon/matfiles/2022-11-18-13-16-02.mat"
+			"crowd/matfiles/2022-11-18-10-16-54.mat"], ...
 		'orca', [
 			"crowdNoon/ORCAfails/matfiles/2022-11-18-12-31-25.mat"
 			"crowdNoon/ORCAfails/matfiles/2022-11-18-12-34-49.mat"
