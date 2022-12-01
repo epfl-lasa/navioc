@@ -1,5 +1,10 @@
-function playexp(mat, dt_start, n_skip, n_skip_rob, kill)
-
+function playexp(mat, dt_start, n_skip, n_skip_rob, kill, dt_memory, show_plan)
+if nargin < 7
+    show_plan = true;
+end
+if nargin < 6
+    dt_memory = 5.0;
+end
 if nargin < 5
 	kill = true;
 end
@@ -13,7 +18,6 @@ if nargin < 2
 	dt_start = 0.0;
 end
 
-dt_memory = 5.0;
 h = 0.05;
 
 fig = figure('Position', [300, 600, 2000, 600]);
@@ -82,7 +86,7 @@ while i < nt
 
 	% OC_REPLY
 	ii_oc = find(mat.oc_reply.t <= t(i) & mat.oc_reply.t >= (t(i) - dt_memory));
-	if ~isempty(ii_oc)
+	if ~isempty(ii_oc) && show_plan
 		i_1 = ii_oc(1);
 		i_2 = ii_oc(end);
 		for i_m = i_1:(i_2-1)
