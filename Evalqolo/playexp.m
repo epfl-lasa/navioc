@@ -1,4 +1,7 @@
-function playexp(mat, dt_start, n_skip, n_skip_rob, kill, dt_memory, show_plan)
+function playexp(mat, dt_start, n_skip, n_skip_rob, kill, dt_memory, show_plan, videoname)
+if nargin < 8
+    videoname = 'experiment.avi';
+end
 if nargin < 7
     show_plan = true;
 end
@@ -27,6 +30,7 @@ set_up_key_press_fcn(fig);
 
 t = (mat.odom_sample.t(1) + dt_start):0.05:mat.odom_sample.t(end);
 nt = length(t);
+frames = cell(1, nt);
 n_ped = size(mat.tracked_persons.isdef, 2);
 
 if n_ped > 7
@@ -35,8 +39,8 @@ else
 	C = colororder;
 end
 
-x_limits = [-3, 25];
-y_limits = [-8, 8];
+x_limits = [-1, 17];
+y_limits = [-3, 3];
 
 tracks_def = mat.tracked_persons.isdef;
 tracks_t = mat.tracked_persons.t;
@@ -120,7 +124,10 @@ while i < nt
 	ylim(ax, y_limits)
 	daspect(ax, [1, 1, 1])
 	title(ax, sprintf('t=%.2fs', t(i) - mat.odom_sample.t(1)))
-	pause(0.1)
+	
+    frames{i} = getframe(ax);
+    
+    pause(0.1)
 	if isobject(fig) & ~isgraphics(fig)
 		break
 	end
@@ -131,6 +138,17 @@ while i < nt
 		break
 	end
 end
+
+writerObj = VideoWriter(videoname, 'Uncompressed AVI');
+writerObj.FrameRate = 20;
+open(writerObj);
+for i = 1:nt
+    if isempty(frames{i})
+        break
+    end
+    writeVideo(writerObj, frames{i});
+end
+close(writerObj);
 
 
 function h = plotcircle(ax, x, y, r, c1, c2)

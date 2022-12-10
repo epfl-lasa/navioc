@@ -1,3 +1,7 @@
 *.asv
 trash
 *.pyc
+*.bmp
+*.eps
+*.png
+*.fig
