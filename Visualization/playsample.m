@@ -1,7 +1,10 @@
-function fig = playsample(sample, mdp_data, no_video, x_limits, y_limits, walls)
+function fig = playsample(sample, mdp_data, no_video, x_limits, y_limits, walls, videoname)
 %pause(0.01) % switch to newest figure
 fig = figure('Position', [300, 600, 2000, 600]);
 ax = axes(fig);
+if nargin < 7
+	videoname = 'learningvideo.avi';
+end 
 if nargin < 3
 	no_video = false;
 end
@@ -32,6 +35,9 @@ if nargin >= 6
 	hold(ax, 'off')
 end
 tmp_handles = [];
+if ~no_video
+	frames = cell(1, size(Px, 1));
+end
 for i = 1:size(Px, 1)
 	X = Px(i, :)';
 	Y = Py(i, :)';
@@ -69,8 +75,13 @@ for i = 1:size(Px, 1)
 	xlim(ax, x_limits)
 	ylim(ax, y_limits)
 	daspect(ax, [1, 1, 1])
+
+	frames{i} = getframe(ax);
+
 	if ~no_video
-		if isfield(mdp_data, 'sampling_time')
+		if nargin >= 7
+			pause(0.001)
+		elseif isfield(mdp_data, 'sampling_time')
 			pause(mdp_data.sampling_time)
 		else
 			pause(0.05)
@@ -81,6 +92,18 @@ for i = 1:size(Px, 1)
 	end
 end
 if ~no_video
+	pause(0.05)
+	writerObj = VideoWriter(videoname, 'Motion JPEG AVI');
+	%writerObj.VideoCompressionMethod = 'H.264';
+	writerObj.FrameRate = 1/mdp_data.sampling_time;
+	open(writerObj);
+	for i = 1:size(Px, 1)
+	    if isempty(frames{i})
+	        break
+	    end
+	    writeVideo(writerObj, frames{i});
+	end
+	close(writerObj);
 	pause(0.05)
 end
 

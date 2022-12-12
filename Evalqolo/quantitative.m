@@ -8,11 +8,11 @@ t_windows = [
 ];
 
 v_mag = [];
-d_x = zeros(1, 6);
+d_x = zeros(1, 5);
 d = [];
 ie = [];
 d_oc = [];
-for i = 1:6
+for i = 1:5
 	mat = loadexp(getfpaths("crowd", "navioc", i));
 	t_1 = mat.odom_sample.t(1) + t_windows(i, 1);
 	t_2 = mat.odom_sample.t(1) + t_windows(i, 2);
@@ -51,7 +51,7 @@ for i = 1:6
 	d_oc = [d_oc; sqrt(Px_rel_oc.^2 + Py_rel_oc.^2)];
 end
 
-d_t = t_windows(:, 2) - t_windows(:, 1);
+d_t = t_windows(1:5, 2) - t_windows(1:5, 1);
 
 fprintf('v_mag = %.2f +/- %.2f\n', mean(v_mag), std(v_mag))
 fprintf('d_x = %.2f +/- %.2f\n', mean(d_x), std(d_x))
