@@ -1,0 +1,20 @@
+paper diamor train: 4
+video +: 9, 19
+
+paper diamor test:
+14
+video +: 2, 4
+
+paper eth:
+22
+
+candidates for eth:
+5
+50 (4 interacting pedestrians)
+55 (1 slips through group)
+63 (1 crosses behind back)
+76 (1 slips through)
+81 (group maneuver)
+82 (most crowded)
+91
+94
