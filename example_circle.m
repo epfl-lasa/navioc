@@ -1,11 +1,31 @@
-n = 10;
-phi = linspace(0, 2*pi*(n-1)/n, n);
-P = reshape([cos(phi); sin(phi)], 1, 2*n);
-V = -P*1.33;
-P = P*8.0;
-x = [P, V] + 0.1*rand(size([P, V]));
+addpath Features2
+addpath Crowdworld2
+addpath cioc/General
+addpath cioc/Reward
+addpath cioc/FastHess
+addpath cioc/Utilities/minFunc
+addpath cioc/Auglag
+addpath cioc/Laplace
+addpath Visualization
 
-goals = -P;
+[sample_vo, mdp_data_vo, goals_vo] = loadstates('states_vo.mat');
+%[sample_ao, mdp_data_ao, goals_ao] = loadstates('states_ao_2.mat');
+
+%playsample(sample_vo, mdp_data_vo)
+%playsample(sample_ao, mdp_data_ao)
+
+x = sample_vo.s;
+n = length(x)/4;
+goals = reshape(goals_vo', 1, 2*n);
+
+% n = 6;
+% phi = linspace(0, 2*pi*(n-1)/n, n);
+% P = reshape([cos(phi); sin(phi)], 1, 2*n);
+% V = -P*1.33;
+% P = P*7.0;
+% x = [P, V] + 0.1*rand(size([P, V]));
+% 
+% goals = -P;
 
 T = 96;
 h = 0.05;
